@@ -1,0 +1,240 @@
+.box {
+    padding: 10px;
+    margin-top: 15px;
+    border: 3px solid lightgray;
+    width: 100%;
+    float: left;
+    position: relative;
+}
+
+button[disabled=disabled], button:disabled {
+    color: lightgray !important;
+}
+
+.legend-title {
+    position: absolute;
+    top: -13px;
+    font-size: 12px;
+    background: #FFFFFF;
+    padding: 2px 5px;
+}
+
+tr.selected-row > td {
+    background: #BDBDBD !important;
+}
+
+/* --------------------------------------------------- BUTTONS --------------------------------------------------- */
+.btn-default {
+    font-size: 150%;
+    position: relative;
+    width: 100px;
+    padding-bottom: 100px;
+    border: solid 1px lightgray;
+    overflow: hidden;
+    margin: 5px auto auto;
+    -webkit-box-shadow: 2px 2px 2px 0px lightgray;
+    -moz-box-shadow: 2px 2px 2px 0px lightgray;
+    box-shadow: 2px 2px 2px 0px lightgray;
+}
+
+.btn-wide {
+    font-size: 120%;
+    position: relative;
+    width: 100%;
+    padding-bottom: 50px;
+    overflow: hidden;
+    margin: 10px auto 0;
+    -webkit-box-shadow: 5px 5px 5px 0px lightgray;
+    -moz-box-shadow: 5px 5px 5px 0px lightgray;
+    box-shadow: 5px 5px 5px 0px lightgray;
+    cursor: pointer;
+}
+
+.btn-wide:hover {
+    border: solid 2px lightgray;
+}
+
+.btn-content {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    cursor: pointer;
+}
+
+.display_table {
+    display: table;
+    width: 100%;
+    height: 100%;
+}
+
+.table-cell {
+    display: table-cell;
+    vertical-align: middle;
+    word-break: keep-all;
+}
+
+.page-grid-cell {
+    height: 300px;
+}
+
+/* --------------------------------------------------- CHART --------------------------------------------------- */
+.progress-bar {
+    width: 100%;
+    height: 20px;
+    border: 1px solid #000;
+    border-radius: 10px;
+    background-color: #FFFFFF;
+}
+
+.progress-bar-bar {
+    width: 0;
+    border-radius: 10px;
+
+    background-color: lightgray;
+    height: 100%;
+    color: #fff;
+    font-weight: normal
+}
+/* --------------------------------------------------- CONTACT LIST --------------------------------------------------- */
+.status-icon {
+    border-radius: 50%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    width: 25px;
+    height: 25px;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.status-to-improve {
+    background-image: url("../img/unlock.png");
+}
+
+.status-booked {
+    background-image: url("../img/locked.png");
+}
+
+.status-busy {
+    background-image: url("../img/loading.png");
+}
+
+.table-results {
+    height: 200px;
+    overflow-y: auto;
+    width: 100%;
+    border: solid 2px lightgray;
+}
+
+.short-table-results {
+    height: 250px;
+    overflow-y: auto;
+    width: 100%;
+    border: solid 2px lightgray;
+}
+
+
+.producers-list {
+    padding: 10px 50px;
+}
+
+ul.truck-details {
+    list-style-type: none;
+    margin-left: -35px;
+    height: 200px;
+    font-weight: 400;
+
+}
+
+.truck-details > li:first-child {
+    font-size: 16px !important;
+    font-weight: 500;
+}
+
+.truck-details > li {
+    position: relative;
+}
+
+.truck-details > li + li{
+    margin-top: 10px;
+}
+
+.truck-details > li > .truck-status {
+    display: inline-block;
+    position: absolute;
+    right: 5px;
+    top: 0;
+}
+
+.truck-details .status {
+    margin-right: 30px;
+}
+
+.load-details, .standby-list, .producer-details {
+    height: 275px;
+}
+
+ul.producer-details-list {
+    height: 200px;
+    list-style-type: none;
+    margin-left: -35px;
+    font-weight: 400;
+}
+
+.producer-details-list > li:first-child {
+    font-size: 16px !important;
+    font-weight: 500;
+}
+
+.producer-details-list > li + li{
+    margin-top: 10px;
+}
+
+/* -------------------------------------------- STANDBY-LIST ------------------------------------------- */
+.standby-list-main > input{
+    max-width: 100%;
+}
+
+.bottom-icon-container {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+.bottom-icon-remove {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+}
+
+/* BOOKINGS */
+.bookings-producers-list input {
+    max-width: 100%;
+    width: 100%;
+    border: solid 1px lightgray;
+    font-size: 12px;
+    line-height: 20px;
+    padding: 0 5px;
+    border-radius: 5px;
+}
+
+.bookings-producers-list select {
+    width: 90%;
+    background: transparent;
+    padding: 2px 5px;
+    font-size: 12px;
+    border: 1px solid lightgray;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.stand-by-popup input {
+    display: inline-block;
+}
+
+.popup-label {
+    min-width: 90px;
+}

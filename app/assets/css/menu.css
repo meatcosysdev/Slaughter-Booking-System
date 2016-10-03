@@ -1,0 +1,123 @@
+.toggle-wrap {
+    padding: 10px 10px 10px 0;
+    position: absolute;
+    cursor: pointer;
+    float: left;
+    margin-left: 0;
+
+    -webkit-transition: margin-left .2s ease-in-out;
+    -moz-transition: margin-left .2s ease-in-out;
+    -o-transition: margin-left .2s ease-in-out;
+    transition: margin-left .2s ease-in-out;
+}
+
+.toggle-wrap-init {
+    padding: 10px 10px 10px 5px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    cursor: pointer;
+
+    -webkit-transition: margin-left .2s ease-in-out;
+    -moz-transition: margin-left .2s ease-in-out;
+    -o-transition: margin-left .2s ease-in-out;
+    transition: margin-left .2s ease-in-out;
+}
+
+.menu-toggle,
+.menu-toggle::before,
+.menu-toggle::after {
+    -webkit-transition: all .2s ease-in-out;
+    -moz-transition: all .2s ease-in-out;
+    -o-transition: all .2s ease-in-out;
+    transition: all .2s ease-in-out;
+}
+
+.menu-toggle {
+    width: 30px;
+    margin: 10px 5px;
+    position: relative;
+    border-top: 6px solid #888;
+    display: block;
+}
+
+.menu-toggle::before,
+.menu-toggle::after {
+    content: "";
+    display: block;
+    background: #888;
+    height: 6px;
+    width: 30px;
+    position: absolute;
+    top: -16px;
+    -ms-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+    -ms-transform-origin: 13%;
+    -webkit-transform-origin: 13%;
+    transform-origin: 13%;
+}
+
+.menu-toggle::after {
+    top: 4px;
+}
+
+.toggle-wrap.active .menu-toggle,
+.toggle-wrap.active .menu-toggle::before,
+.toggle-wrap.active .menu-toggle::after {
+    -webkit-transition: all .2s ease-in-out;
+    -moz-transition: all .2s ease-in-out;
+    -o-transition: all .2s ease-in-out;
+    transition: all .2s ease-in-out;
+}
+
+.menu-content {
+    position: relative;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.menu-content .toggle-wrap.active {
+    margin-left: 82%;
+}
+
+.menuSlide {
+  /*  background-image: url("../img/menu.jpg");*/
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 30%;
+    background: #FAFAFA;
+    -webkit-box-shadow: 2px 2px 2px 0px lightgray;
+    -moz-box-shadow: 2px 2px 2px 0px lightgray;
+    box-shadow: 2px 2px 2px 0px lightgray;
+}
+
+ul.menu-options {
+    margin: 50px 0 0 -40px;
+    list-style: none;
+}
+
+.menu-options > li {
+    cursor: pointer;
+    padding: 10px 0;
+    text-align: center;
+    margin: 0 15px;
+}
+
+.menu-options > li >  a:hover {
+    color: #317EAC;
+}
+
+.menu-options > li > a {
+     font-weight: 500;
+     text-transform: uppercase;
+     font-size: 15px;
+
+     text-decoration: none;
+     color: #000;
+ }
+
+.menu-options > li + li {
+   border-top: solid 1px lightgray;
+}

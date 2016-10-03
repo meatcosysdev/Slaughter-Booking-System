@@ -1,0 +1,72 @@
+<div class="box">
+    <div class="legend-title">Truck Details</div>
+
+    <ul class="truck-details">
+        <li>
+            <span>Truck Info for: {{vm.current_truck_load.truck_id}}</span>
+
+            <div class="truck-status">
+                <div class="status">Status: {{vm.current_truck_load.status}}</div>
+                <div class="status-icon"
+                     ng-class="{
+                     'status-booked' : vm.current_truck_load.status == 'booked',
+                     'status-to-improve' : vm.current_truck_load.status == 'to-improve',
+                     'status-busy' : vm.current_truck_load.status == 'busy'}"></div>
+            </div>
+        </li>
+        <li>
+            <div>Truck size: {{vm.current_truck_load.truck_size}}</div>
+        </li>
+        <li>
+            <div>Merit point:  {{vm.current_truck_load.merit_point}}</div>
+        </li>
+        <li>
+            <div>Allocation Date:  {{vm.current_truck_load.allocated_date}}</div>
+        </li>
+        <li>
+            <div>Preferred date range:  {{vm.current_truck_load.preferred_date_range}}</div>
+        </li>
+    </ul>
+
+    <div class="col-xs-6 col-xs-offset-3 no-padding">
+        <button class="btn-wide pointer btn-default" ng-disabled="!vm.current_truck_load || vm.disableImprovement" ng-click="vm.showImprovePanel()">
+            <div class="btn-content">
+                <div class="display_table">
+                    <div class="table-cell">Try to improve</div>
+                </div>
+            </div>
+        </button>
+    </div>
+</div>
+
+<!-- Try to improve popup -->
+<div class="menu-panel" ng-show="!!vm.showImprovePopup"></div>
+<div class="center-menu menu-popup" ng-show="!!vm.showImprovePopup">
+    <span class="close-btn pointer" ng-click="vm.showImprovePopup=false"></span>
+    <div class="text-center">
+        <span class="popup-title">Try to improve</span>
+    </div>
+    <div class="col-xs-6">
+        <label>From:</label><input ng-change="vm.validateDate()" type="date" ng-model="vm.fromDate"/>
+    </div>
+
+    <div class="col-xs-6">
+        <label>To:</label> <input ng-change="vm.validateDate()" type="date" ng-model="vm.toDate"/>
+    </div>
+
+    <div class="col-xs-12 margin-top10" ng-if="vm.dateErrorMessages">
+        <ul class="error-list">
+            <li ng-repeat="e in vm.dateErrorMessages" class="col-xs-12 alert-danger">{{e}}</li>
+        </ul>
+    </div>
+
+    <div class="col-xs-6 col-xs-offset-3">
+        <button class="btn-wide pointer btn-default" ng-disabled="!vm.fromDate || !vm.toDate || vm.dateErrorMessages.length" ng-click="vm.improveTruckLoad()">
+            <div class="btn-content">
+                <div class="display_table">
+                    <div class="table-cell">Try to improve</div>
+                </div>
+            </div>
+        </button>
+    </div>
+</div>

@@ -1,0 +1,98 @@
+<div class="box">
+    <div class="legend-title">Truck Details</div>
+
+    <ul class="truck-details">
+        <li></li>
+        <li>
+            <div>Truck size: {{vm.current_stand_by.truck_size}}</div>
+        </li>
+
+        <li>
+            <div>Lead days: {{vm.current_stand_by.lead_days}}</div>
+        </li>
+        <li>
+            <div>Preferred date range: {{vm.current_stand_by.preferred_date_from | date: "dd/MM/yyyy" }} -
+                {{vm.current_stand_by.preferred_date_until | date: 'dd/MM/yyyy'}}
+            </div>
+        </li>
+    </ul>
+
+    <div class="col-xs-6 col-xs-offset-3 no-padding">
+        <button class="btn-wide pointer btn-default" ng-disabled="!vm.current_stand_by"
+                ng-click="vm.showAlterStandByPanel()">
+            <div class="btn-content">
+                <div class="display_table">
+                    <div class="table-cell">Alter StandBy</div>
+                </div>
+            </div>
+        </button>
+    </div>
+</div>
+
+<!-- Alter standby popup -->
+<div class="menu-panel" ng-show="!!vm.showAlterStandByPopup"></div>
+<div class="center-menu menu-popup stand-by-popup" ng-show="!!vm.showAlterStandByPopup">
+    <span class="close-btn pointer" ng-click="vm.showAlterStandByPopup=false"></span>
+
+    <form name="standByForm">
+        <div class="text-center">
+            <span class="popup-title">Alter Stand-by</span>
+        </div>
+        <div class="col-xs-6">
+            <label>From:</label>
+            <input ng-change="vm.validateStandByDate()"
+                   type="date"
+                   ng-required="true"
+                   ng-model="vm.current_stand_by.preferred_date_from"/>
+        </div>
+
+        <div class="col-xs-6">
+            <label>To:</label>
+            <input ng-change="vm.validateStandByDate()"
+                   ng-required="true"
+                   type="date"
+                   ng-model="vm.current_stand_by.preferred_date_until"/>
+        </div>
+
+        <div class="col-xs-8 col-xs-offset-2 margin-top20 text-center">
+            <label class="popup-label">Lead Days:</label>
+
+            <input type="number" ng-model="vm.current_stand_by.lead_days"  ng-required="true"/>
+        </div>
+
+
+        <div class="col-xs-8 col-xs-offset-2 margin-top20 text-center">
+            <label class="popup-label">Load Size:</label>
+            <input type="number" ng-model="vm.current_stand_by.truck_size"  ng-required="true"/>
+        </div>
+    </form>
+
+    <div class="col-xs-12 margin-top10" ng-if="vm.standByErrorMessages">
+        <ul class="error-list">
+            <li ng-repeat="e in vm.standByErrorMessages" class="col-xs-12 alert-danger">{{e}}</li>
+        </ul>
+    </div>
+
+    <div class="col-xs-6">
+        <button class="btn-wide pointer btn-default"
+                ng-disabled="vm.standByErrorMessages.length || !standByForm.$valid"
+                ng-click="vm.updateStandBy()">
+            <div class="btn-content">
+                <div class="display_table">
+                    <div class="table-cell">Alter StandBy</div>
+                </div>
+            </div>
+        </button>
+    </div>
+
+    <div class="col-xs-6">
+        <button class="btn-wide pointer btn-default"
+                ng-click="vm.removeStandBy()">
+            <div class="btn-content">
+                <div class="display_table">
+                    <div class="table-cell">Remove StandBy</div>
+                </div>
+            </div>
+        </button>
+    </div>
+</div>

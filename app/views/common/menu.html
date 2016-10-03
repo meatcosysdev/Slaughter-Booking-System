@@ -1,0 +1,29 @@
+<div class="menu-content">
+    <div class="toggle-wrap" ng-class="{'active': msOpen}" ng-click="msOpen = !msOpen">
+        <span class="menu-toggle"></span>
+    </div>
+
+    <ul class="menu-options" ng-if="msOpen">
+        <li ng-class="{'selected': isCurrentPage('dashboard')}">
+            <a href="#/home">
+                Dashboard
+            </a>
+        </li>
+        <li ng-class="{'selected': isCurrentPage('contact')}">
+            <a href="#/contact-list">
+                Contact List
+            </a>
+        </li>
+        <li ng-class="{'selected': isCurrentPage('standby')}">
+            <a href="#/standby-list">
+                Stand-by List
+            </a>
+        </li>
+        <li ng-class="{'selected': isCurrentPage('bookings')}">
+            <a href="#/bookings">
+                Bookings
+            </a>
+        </li>
+    </ul>
+</div>
+

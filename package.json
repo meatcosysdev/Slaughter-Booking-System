@@ -1,0 +1,11 @@
+{
+  "name": "bookings-app",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {},
+  "dependencies": {
+    "body-parser": "~1.10.2",
+    "express": "~4.11.1",
+    "pg": "^4.5.6"
+  }
+}

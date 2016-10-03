@@ -1,0 +1,94 @@
+<div class="box">
+    <div class="legend-title">Producer Details</div>
+
+    <div class="producer-details">
+
+        <ul class="producer-details-list">
+            <li>
+                <span>Producer: {{vm.current_producer.legal_name}}</span>
+            </li>
+            <li>
+                <div>Merit point: {{vm.current_producer.merit_point}}</div>
+            </li>
+            <li>
+                <div>Phone number: {{vm.current_producer.telephone_no}}</div>
+            </li>
+            <li>
+                <div>Mobile number: {{vm.current_producer.sms_no}}</div>
+            </li>
+            <li>
+                <div>Email: {{vm.current_producer.email_address}}</div>
+            </li>
+
+            <li>
+                <div>Contact status: {{vm.current_producer.contact_status}}</div>
+            </li>
+        </ul>
+
+        <div class="col-xs-6 col-xs-offset-3 no-padding">
+            <button class="btn-wide pointer btn-default" ng-disabled="!vm.current_producer" ng-click="vm.showProducerContact=true">
+                <div class="btn-content">
+                    <div class="display_table">
+                        <div class="table-cell">Contact</div>
+                    </div>
+                </div>
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<!--Contact Producer-->
+<div class="menu-panel" ng-show="!!vm.showProducerContact"></div>
+<div class="center-menu menu-popup" ng-show="!!vm.showProducerContact">
+    <span class="close-btn pointer" ng-click="vm.showProducerContact=false"></span>
+
+    <div class="text-center">
+        <span class="popup-title">Contact Producer</span>
+    </div>
+
+    <div class="col-xs-12">
+        <div class="col-xs-5 no-padding">
+            <label>Contact Method:</label>
+        </div>
+        <div class="col-xs-7 no-padding">
+            <select ng-model="vm.contactMethod">
+                <option value="{{o.name}}"
+                        ng-repeat="o in vm.contactMethods">{{o.name}}
+                </option>
+            </select>
+        </div>
+    </div>
+
+    <div class="col-xs-12">
+        <div class="col-xs-5 no-padding">
+            <label>Remarks:</label>
+        </div>
+        <div class="col-xs-7 no-padding">
+            <textarea ng-model="vm.remarks" row="3" class="form-control"></textarea>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-4">
+            <button class="btn-wide pointer btn-default" ng-click="vm.contactProducer(vm.contactMethod)">
+                <div class="btn-content">
+                    <div class="display_table">
+                        <div class="table-cell">Contacted</div>
+                    </div>
+                </div>
+            </button>
+        </div>
+
+        <div class="col-xs-4 no-padding col-xs-offset-4">
+            <button class="btn-wide pointer btn-default" ng-click="vm.contactProducer('not-contacted')">
+                <div class="btn-content">
+                    <div class="display_table">
+                        <div class="table-cell">Didn't contact</div>
+                    </div>
+                </div>
+            </button>
+        </div>
+    </div>
+</div>
+

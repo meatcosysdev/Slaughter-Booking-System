@@ -1,0 +1,78 @@
+<div class="bookings-producers-list">
+    <div class="box">
+        <div class="legend-title">Producer List</div>
+        <div class="row">
+            <div class="col-sm-5">
+                <div class="row margin-bottom10">
+                    <div class="col-xs-4 padding-right0">
+                        <input type="number" ng-model="vm.producer_number" placeholder="Producer number"/>
+                    </div>
+                    <div class="col-xs-4 padding-right0">
+                        <input type="number" ng-model="vm.load_number" placeholder="Load number"/>
+                    </div>
+
+                    <div class="col-xs-4 padding-right0">
+                        <select ng-model="vm.selected_facility">
+                            <option value="{{f.name}}" ng-repeat="f in vm.facilities">{{f.name}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row margin-bottom10">
+                    <div class="col-xs-4 padding-right0">
+                        <input type="text" ng-model="vm.producer_name" placeholder="Producer name"/>
+                    </div>
+
+                    <div class="col-xs-4 padding-right0">
+                        <input type="text" ng-model="vm.booked_date" placeholder="Booked date"/>
+                    </div>
+
+                    <div class="col-xs-4 padding-right0">
+                        <select ng-model="vm.selected_stream">
+                            <option value="{{f.name}}" ng-repeat="f in vm.streams">{{f.name}}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row margin-bottom10">
+                    <div class="col-xs-offset-8 col-xs-4 padding-right0">
+                        <select ng-model="vm.office">
+                            <option value="{{f.name}}" ng-repeat="f in vm.offices">{{f.name}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-7">
+                <div class="short-table-results">
+                    <table class="table table-striped">
+                        <thead>
+                        <tr>
+                            <th>Truck ID</th>
+                            <th>Allocated Date</th>
+                            <th>Truck Size</th>
+                            <th>Loads</th>
+                            <th>Status</th>
+                            <th class="text-center">Select</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+
+                        <tr ng-repeat="r in vm.truck_bookings" class="pointer" ng-click="vm.selectBookingToImprove(r)" ng-class="{'success' : r.isSelected}">
+                            <td class="text-left">{{r.id}}</td>
+                            <td class="text-left">{{r.allocated_date}}</td>
+                            <td class="text-left">{{r.truck_size}}</td>
+                            <td class="text-left">{{r.loads_number}}</td>
+                            <td class="text-left">{{r.current_status}}</td>
+
+                            <td class="text-center">
+                                <input type="radio" ng-checked="r.isSelected"/>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

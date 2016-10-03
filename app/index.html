@@ -1,0 +1,54 @@
+<!doctype html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Bookings</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="bower_components/toastr/toastr.min.css">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="assets/css/common.css">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/menu.css">
+</head>
+
+<body ng-app="BookingsApp">
+<div class="container">
+    <!-- MAIN CONTENT -->
+    <div class="container">
+        <div class="row main-container">
+            <div ng-include="'views/common/nav.html'"></div>
+
+            <div class="page-container">
+                <div ui-view></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="bower_components/jquery/dist/jquery.js"></script>
+<script src="bower_components/angular/angular.js"></script>
+<script src="bower_components/moment/min/moment.min.js"></script>
+<script src="bower_components/toastr/toastr.min.js"></script>
+<script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+<script src="bower_components/angular-resource/angular-resource.min.js"></script>
+<script src="bower_components/chart.js/dist/Chart.js"></script>
+
+<script src="bower_components/angular-chart.js/dist/angular-chart.min.js"></script>
+
+<script src="scripts/app.js"></script>
+<!--Controllers-->
+<script src="scripts/controllers/bookings-controller.js"></script>
+
+<!--Directives-->
+<script src="scripts/directives/menu.js"></script>
+<script src="scripts/directives/progress-bar.js"></script>
+
+<!--Services-->
+<script src="scripts/services/bookings_service.js"></script>
+<script src="scripts/services/booking_loads_service.js"></script>
+<script src="scripts/services/producer_service.js"></script>
+
+</body>
+</html>
