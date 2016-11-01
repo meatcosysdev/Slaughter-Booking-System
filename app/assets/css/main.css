@@ -134,6 +134,12 @@ tr.selected-row > td {
     border: solid 2px lightgray;
 }
 
+.filters-container {
+    height: 250px;
+    overflow-y: auto;
+    width: 100%;
+}
+
 .short-table-results {
     height: 250px;
     overflow-y: auto;

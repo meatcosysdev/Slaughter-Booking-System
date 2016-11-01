@@ -66,7 +66,7 @@ router.post(CONFIG.serverUrl + '/api/bookings-list', function (req, res, next) {
         var query = client.query("SELECT booking_trucks.*, COUNT(booking_trucks.*) AS LOADS_NUMBER"
             + " FROM booking_trucks"
             + " JOIN booking_loads ON booking_trucks.id = booking_loads.booking_truck_id"
-            + " JOIN producers ON booking_loads.producer_no = producers.legal_name"
+            + " JOIN producers ON booking_loads.producer_no = producers.producer_no"
             + ( where_clause.length ? ' WHERE ' + where_clause.join(' AND ') : '' )
             + " GROUP BY booking_trucks.id", values);
 
@@ -219,8 +219,7 @@ router.get(CONFIG.serverUrl + '/api/booking_loads', function (req, res, next) {
         }
 
         var query = client.query("SELECT *," +
-            "(SELECT producers.id_no FROM producers WHERE booking_loads.producer_no LIKE producers.legal_name) AS id_no, " +
-            "(SELECT producers.id FROM producers WHERE booking_loads.producer_no LIKE producers.legal_name) AS producer_id " +
+            "(SELECT producers.id FROM producers WHERE booking_loads.producer_no = producers.producer_no) AS producer_id " +
             "FROM booking_loads");
 
         query.on('row', function (row) {

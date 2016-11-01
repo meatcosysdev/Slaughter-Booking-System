@@ -3,7 +3,7 @@
         <div class="legend-title">Producer List</div>
         <div class="row">
             <div class="col-sm-5">
-                <div class="col-xs-12 short-table-results">
+                <div class="col-xs-12 filters-container">
 
                     <div class="row margin-bottom10">
                         <div class="col-xs-4 padding-right0">
@@ -63,7 +63,7 @@
                         </thead>
                         <tbody>
 
-                        <tr ng-repeat="r in vm.truck_bookings" class="pointer" ng-click="vm.selectBookingToImprove(r)"
+                        <tr ng-repeat="r in vm.truck_bookings | orderBy: 'id'" class="pointer" ng-click="vm.selectBookingToImprove(r)"
                             ng-class="{'success' : r.isSelected}">
                             <td class="text-left">{{r.id}}</td>
                             <td class="text-left">{{r.allocated_date}}</td>

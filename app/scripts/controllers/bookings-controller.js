@@ -69,14 +69,14 @@
         function loadSupplyStreams() {
             bookingsService.get_supply_streams().then(function (result) {
                 vm.streams = result;
-                if (vm.streams.length) vm.selected_stream = vm.streams[0].id;
+                //if (vm.streams.length) vm.selected_stream = vm.streams[0].id;
             });
         }
 
         function loadFacilities() {
             bookingsService.get_facilities().then(function (result) {
                 vm.facilities = result;
-                if (vm.facilities.length) vm.selected_facility = vm.facilities[0].id;
+                //if (vm.facilities.length) vm.selected_facility = vm.facilities[0].id;
             });
         }
 
@@ -91,11 +91,7 @@
             if (vm.selected_facility) filters.selected_facility = vm.selected_facility;
             if (vm.selected_stream) filters.selected_stream = vm.selected_stream;
 
-            console.log(filters)
-
             bookingsService.get_all(filters).then(function (result) {
-                console.log(result);
-
                 vm.truck_bookings = result.map(function (t) {
                     t.allocated_date = moment(t.allocated_date).format('DD/MM/YYYY');
                     t.preferred_date_from = moment(t.preferred_date_from).toDate();
