@@ -54,6 +54,12 @@ tr.selected-row > td {
     border: solid 2px lightgray;
 }
 
+.btn-cancel-load {
+    background: #B40431 !important;
+    color: #000;
+}
+
+
 .btn-content {
     position: absolute;
     height: 100%;
@@ -135,6 +141,13 @@ tr.selected-row > td {
     border: solid 2px lightgray;
 }
 
+.search-btn {
+    position: absolute;
+    right: 15px;
+    bottom: 5px;
+    font-size: 30px;
+    cursor: pointer;
+}
 
 .producers-list {
     padding: 10px 50px;

@@ -1,0 +1,60 @@
+<div class="text-center">
+    <h1 class="text-center">Bookings 2016 - DASHBOARD</h1>
+</div>
+
+<div class="col-sm-offset-1 col-sm-10">
+    <div class="row margin-top50">
+        <div class="col-xs-12">
+            <progress-bar cur-val='20' max-val='100'></progress-bar>
+        </div>
+
+        <div class="col-xs-4 text-left">
+            <label>You have to contact 25 producers today</label>
+        </div>
+
+        <div class="col-xs-4 text-center">
+            <label>This will required over 3 calls per hour</label>
+        </div>
+
+        <div class="col-xs-4 text-right">
+            <label>Your current rate is 1 call per hour</label>
+        </div>
+    </div>
+
+    <div class="row margin-top50">
+        <div class="col-xs-4 pull-right">
+            <div class="box">
+                <div class="text-center text-bold">Contact list</div>
+
+                <div>4 Standbys about to expire</div>
+                <div>21 Slaughter days to improve</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row margin-top50">
+        <div class="col-xs-4 text-center">
+            <canvas class="chart chart-doughnut"
+                    chart-data="vm.data"
+                    chart-labels="vm.labels">
+            </canvas>
+            <label>All cancellations vs Your cancellations</label>
+        </div>
+        <div class="col-xs-4 text-center">
+            <canvas class="chart chart-doughnut"
+                    chart-data="vm.data"
+                    chart-labels="vm.labels">
+            </canvas>
+            <label>All non-conformance vs Your non-conformance</label>
+        </div>
+        <div class="col-xs-4 text-center">
+            <canvas id="bar" class="chart chart-bar"
+                    chart-data="vm.data2"
+                    chart-labels="vm.labels2"
+                    chart-series="vm.series">
+            </canvas>
+            <label>Your bookings vs deliveries</label>
+        </div>
+    </div>
+</div>
+

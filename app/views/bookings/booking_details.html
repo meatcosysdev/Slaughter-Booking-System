@@ -48,11 +48,11 @@
         <span class="popup-title">Try to improve</span>
     </div>
     <div class="col-xs-6">
-        <label>From:</label><input ng-change="vm.validateDate()" type="date" ng-model="vm.current_booking.preferred_date_from"/>
+        <label>From:</label><input ng-change="vm.validateDate()" type="date" ng-model="vm.to_improve_booking.preferred_date_from"/>
     </div>
 
     <div class="col-xs-6">
-        <label>To:</label> <input ng-change="vm.validateDate()" type="date" ng-model="vm.current_booking.preferred_date_until"/>
+        <label>To:</label> <input ng-change="vm.validateDate()" type="date" ng-model="vm.to_improve_booking.preferred_date_until"/>
     </div>
 
     <div class="col-xs-12 margin-top10" ng-if="vm.dateErrorMessages">
@@ -62,7 +62,7 @@
     </div>
 
     <div class="col-xs-6 col-xs-offset-3">
-        <button class="btn-wide pointer btn-default" ng-disabled="!vm.current_booking.preferred_date_from || !vm.current_booking.preferred_date_until || vm.dateErrorMessages.length"
+        <button class="btn-wide pointer btn-default" ng-disabled="!vm.to_improve_booking.preferred_date_from || !vm.to_improve_booking.preferred_date_until || vm.dateErrorMessages.length"
                 ng-click="vm.updateTruckBooking()">
             <div class="btn-content">
                 <div class="display_table">

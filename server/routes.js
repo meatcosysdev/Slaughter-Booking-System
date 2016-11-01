@@ -7,8 +7,9 @@ var pg = require('pg');
 var CONFIG = require('./models/config').CONFIG;
 
 // -------------------------------------------- BOOKINGS --------------------------------------------
-router.get('/api/bookings', function (req, res, next) {
+router.post(CONFIG.serverUrl + '/api/bookings-list', function (req, res, next) {
     var results = [];
+    var data = req.body;
 
     pg.connect(CONFIG.connectionString, function (err, client, done) {
         // Handle connection errors
@@ -18,13 +19,58 @@ router.get('/api/bookings', function (req, res, next) {
             return res.status(500).json({success: false, data: err});
         }
 
-        var query = client.query("SELECT booking_trucks.*, " +
-            "(SELECT COUNT(*) FROM booking_loads WHERE booking_trucks.id = booking_loads.booking_truck_id) AS LOADS_NUMBER " +
-            "FROM booking_trucks " +
-            "ORDER BY booking_trucks.id ASC");
+
+        var filters = data['filters'];
+        var where_clause = [];
+        var values = [];
+
+        if (filters && Object.keys(filters).length > 0) {
+            var i = 1;
+            if (filters.producer_number) {
+                where_clause.push('producers.producer_no = ($' + i + ')');
+                i++;
+                values.push(filters.producer_number);
+            }
+
+            if (filters.producer_name) {
+                where_clause.push('LOWER(producers.legal_name) = LOWER(($' + i + '))');
+                i++;
+                values.push(filters.producer_name);
+            }
+
+            if (filters.load_number) {
+                where_clause.push('booking_loads.id = ($' + i + ')');
+                i++;
+                values.push(filters.load_number);
+            }
+
+            if (filters.booked_date) {
+                where_clause.push('booking_trucks.booking_date = ($' + i + ')');
+                i++;
+                values.push(filters.booked_date);
+            }
+
+            if (filters.selected_facility) {
+                where_clause.push('booking_trucks.facility_id = ($' + i + ')');
+                i++;
+                values.push(filters.selected_facility);
+            }
+
+            if (filters.selected_stream) {
+                where_clause.push('booking_trucks.supply_stream_id = ($' + i + ')');
+                i++;
+                values.push(filters.selected_stream);
+            }
+        }
+
+        var query = client.query("SELECT booking_trucks.*, COUNT(booking_trucks.*) AS LOADS_NUMBER"
+            + " FROM booking_trucks"
+            + " JOIN booking_loads ON booking_trucks.id = booking_loads.booking_truck_id"
+            + " JOIN producers ON booking_loads.producer_no = producers.legal_name"
+            + ( where_clause.length ? ' WHERE ' + where_clause.join(' AND ') : '' )
+            + " GROUP BY booking_trucks.id", values);
 
         query.on('row', function (row) {
-            //storage.add();
             results.push(row);
         });
 
@@ -37,7 +83,7 @@ router.get('/api/bookings', function (req, res, next) {
     });
 });
 
-router.post('/api/bookings/', function (req, res) {
+router.post(CONFIG.serverUrl + '/api/bookings/', function (req, res) {
     var data = req.body;
 
     if (!data.id) {
@@ -53,7 +99,8 @@ router.post('/api/bookings/', function (req, res) {
             return res.status(500).send(json({success: false, data: err}));
         }
 
-        client.query("UPDATE booking_trucks SET preferred_date_from=($1), preferred_date_until=($2) WHERE id=($3)", [data.preferred_date_from, data.preferred_date_until, data.id]);
+        client.query("UPDATE booking_trucks SET preferred_date_from=($1), preferred_date_until=($2), current_status=($3) WHERE id=($4)",
+            [data.preferred_date_from, data.preferred_date_until, data.current_status, data.id]);
 
         // Producer was contacted
         if (data.contact_status) {
@@ -65,7 +112,7 @@ router.post('/api/bookings/', function (req, res) {
 });
 
 // -------------------------------------------- STANDBY - BOOKINGS --------------------------------------------
-router.get('/api/booking_standby_trucks', function (req, res, next) {
+router.get(CONFIG.serverUrl + '/api/booking_standby_trucks', function (req, res, next) {
     var results = [];
 
     pg.connect(CONFIG.connectionString, function (err, client, done) {
@@ -92,7 +139,7 @@ router.get('/api/booking_standby_trucks', function (req, res, next) {
     });
 });
 
-router.get('/api/booking_standby_trucks/:id', function (req, res, next) {
+router.get(CONFIG.serverUrl + '/api/booking_standby_trucks/:id', function (req, res, next) {
     var results = {};
     var id = req.params.id;
 
@@ -117,7 +164,7 @@ router.get('/api/booking_standby_trucks/:id', function (req, res, next) {
     });
 });
 
-router.post('/api/booking_standby_trucks/', function (req, res) {
+router.post(CONFIG.serverUrl + '/api/booking_standby_trucks/', function (req, res) {
     var data = req.body;
 
     if (!data.id) {
@@ -141,7 +188,7 @@ router.post('/api/booking_standby_trucks/', function (req, res) {
     });
 });
 
-router.delete('/api/booking_standby_trucks/:id', function (req, res) {
+router.delete(CONFIG.serverUrl + '/api/booking_standby_trucks/:id', function (req, res) {
     var results = [];
     var id = req.params.id;
 
@@ -160,7 +207,7 @@ router.delete('/api/booking_standby_trucks/:id', function (req, res) {
 });
 
 // -------------------------------------------- BOOKING_LOADS --------------------------------------------
-router.get('/api/booking_loads', function (req, res, next) {
+router.get(CONFIG.serverUrl + '/api/booking_loads', function (req, res, next) {
     var results = [];
 
     pg.connect(CONFIG.connectionString, function (err, client, done) {
@@ -189,7 +236,7 @@ router.get('/api/booking_loads', function (req, res, next) {
     });
 });
 
-router.post('/api/bookings_loads/', function (req, res) {
+router.post(CONFIG.serverUrl + '/api/bookings_loads/', function (req, res) {
     var data = req.body;
 
     if (!data.id) {
@@ -223,7 +270,7 @@ router.post('/api/bookings_loads/', function (req, res) {
 });
 
 // -------------------------------------------- PRODUCERS --------------------------------------------
-router.get('/api/producers', function (req, res, next) {
+router.get(CONFIG.serverUrl + '/api/producers', function (req, res, next) {
     var results = [];
 
     pg.connect(CONFIG.connectionString, function (err, client, done) {
@@ -249,7 +296,7 @@ router.get('/api/producers', function (req, res, next) {
     });
 });
 
-router.get('/api/producers/:id', function (req, res, next) {
+router.get(CONFIG.serverUrl + '/api/producers/:id', function (req, res, next) {
     var results = {};
     var id = req.params.id;
 
@@ -274,7 +321,7 @@ router.get('/api/producers/:id', function (req, res, next) {
     });
 });
 
-router.post('/api/producers/', function (req, res) {
+router.post(CONFIG.serverUrl + '/api/producers/', function (req, res) {
     var data = req.body;
 
     if (!data.id) {
@@ -298,7 +345,7 @@ router.post('/api/producers/', function (req, res) {
 
 });
 // -------------------------------------------- FACILITIES --------------------------------------------
-router.get('/api/facilities', function (req, res, next) {
+router.get(CONFIG.serverUrl + '/api/facilities', function (req, res, next) {
     var results = [];
 
     pg.connect(CONFIG.connectionString, function (err, client, done) {
@@ -325,7 +372,7 @@ router.get('/api/facilities', function (req, res, next) {
 });
 
 // -------------------------------------------- SUPPLY STREAMS --------------------------------------------
-router.get('/api/supply_streams', function (req, res, next) {
+router.get(CONFIG.serverUrl + '/api/supply_streams', function (req, res, next) {
     var results = [];
 
     pg.connect(CONFIG.connectionString, function (err, client, done) {
@@ -350,7 +397,6 @@ router.get('/api/supply_streams', function (req, res, next) {
 
     });
 });
-
 
 module.exports = router;
 

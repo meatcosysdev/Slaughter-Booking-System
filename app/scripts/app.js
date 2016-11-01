@@ -18,10 +18,15 @@
     runOptions.$inject = ['$rootScope', '$templateCache'];
 
     function configFunction($stateProvider, $urlRouterProvider) {
-        $urlRouterProvider.otherwise('/bookings');
-
+        $urlRouterProvider.otherwise('/home');
 
         $stateProvider
+            .state('home', {
+                url: "/home",
+                controller: 'DashboardController as vm',
+                templateUrl: 'views/dashboard/index.html'
+            })
+
             // BOOKINGS
             .state('bookings', {
                 url: "/bookings",
@@ -32,7 +37,6 @@
     }
 
     function runOptions($rootScope, $templateCache) {
-
         $rootScope.$on('$viewContentLoaded', function () {
             $templateCache.removeAll();
         });

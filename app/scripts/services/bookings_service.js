@@ -40,12 +40,13 @@
             return defer.promise;
         }
 
-        function get_all() {
+        function get_all(filters) {
             var defer = $q.defer();
 
             $http({
-                url: '/api/bookings/',
-                method: "GET"
+                url: '/api/bookings-list/',
+                data: { filters: filters },
+                method: "POST"
             }).then(function (response) {
                     defer.resolve(response.data);
                 },

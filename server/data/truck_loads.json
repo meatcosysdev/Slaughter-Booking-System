@@ -1,5 +1,0 @@
-<<<<<<< Updated upstream
-[{"truck_id":"676767","load_id":"112323","allocated_date":"24/08/2016","truck_size":40,"loads":"1","status":"busy","producer":"Jim Carey","producer_number":"123456","merit_point":"20"},{"truck_id":"12","load_id":"22","allocated_date":"16/08/2016","truck_size":20,"loads":"2","status":"booked","producer":"Ana Logan","producer_number":"123456","merit_point":"20"},{"truck_id":"33","load_id":"1212","allocated_date":"16/09/2016","truck_size":40,"loads":"2","status":"to-improve","producer":"John Snow","producer_number":"123456","merit_point":"20"}]
-=======
-[]
->>>>>>> Stashed changes

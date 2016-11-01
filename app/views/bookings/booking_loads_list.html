@@ -77,18 +77,10 @@
                 </div>
             </button>
         </div>
-        <div class="col-xs-4">
-            <button class="btn-wide pointer btn-default" ng-click="vm.showAlterLoadPopup=false">
-                <div class="btn-content">
-                    <div class="display_table">
-                        <div class="table-cell">Accidental click</div>
-                    </div>
-                </div>
-            </button>
-        </div>
 
-        <div class="col-xs-4 no-padding">
-            <button class="btn-wide pointer btn-default"
+
+        <div class="col-xs-4 col-xs-offset-4 no-padding">
+            <button class="btn-wide pointer btn-cancel-load"
                     ng-disabled="!vm.current_load.reason"
                     ng-click="vm.cancelLoad()">
                 <div class="btn-content">

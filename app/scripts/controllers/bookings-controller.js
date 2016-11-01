@@ -30,6 +30,7 @@
         // METHODS
         vm.init = init;
         vm.loadAllBookings = loadAllBookings;
+        vm.filterBookings = filterBookings;
 
         vm.loadFacilities = loadFacilities;
         vm.loadSupplyStreams = loadSupplyStreams;
@@ -68,14 +69,40 @@
         function loadSupplyStreams() {
             bookingsService.get_supply_streams().then(function (result) {
                 vm.streams = result;
-                if (vm.streams.length) vm.selected_stream = vm.streams[0].name;
+                if (vm.streams.length) vm.selected_stream = vm.streams[0].id;
             });
         }
 
         function loadFacilities() {
             bookingsService.get_facilities().then(function (result) {
                 vm.facilities = result;
-                if (vm.facilities.length) vm.selected_facility = vm.facilities[0].name;
+                if (vm.facilities.length) vm.selected_facility = vm.facilities[0].id;
+            });
+        }
+
+
+        function filterBookings() {
+            var filters = {};
+
+            if (vm.producer_number) filters.producer_number = vm.producer_number;
+            if (vm.producer_name) filters.producer_name = vm.producer_name;
+            if (vm.load_number) filters.load_number = vm.load_number;
+            if (vm.booked_date) filters.booked_date = moment(vm.booked_date).format('YYYY-MM-DD');
+            if (vm.selected_facility) filters.selected_facility = vm.selected_facility;
+            if (vm.selected_stream) filters.selected_stream = vm.selected_stream;
+
+            console.log(filters)
+
+            bookingsService.get_all(filters).then(function (result) {
+                console.log(result);
+
+                vm.truck_bookings = result.map(function (t) {
+                    t.allocated_date = moment(t.allocated_date).format('DD/MM/YYYY');
+                    t.preferred_date_from = moment(t.preferred_date_from).toDate();
+                    t.preferred_date_until = moment(t.preferred_date_until).toDate();
+                    return t;
+                });
+
             });
         }
 
@@ -115,7 +142,7 @@
         function getTruckLoads(booking_id) {
             bookingsLoadsService.get_all().then(function (result) {
                 vm.truck_loads = result.filter(function (load) {
-                    return load.booking_truck_id == booking_id;
+                    return load.booking_truck_id == booking_id && load.current_status != 'cancelled';
                 });
 
                 // FIND STANDBY BOOKING
@@ -137,7 +164,7 @@
             producerService.get_by_id(producer_id).then(function (result) {
                 vm.current_producer = result;
                 vm.current_producer.merit_point = vm.current_load.merit_point;
-                vm.contactMethod = vm.current_producer.contact_status = vm.current_booking.contact_status; // TODO
+                vm.contactMethod = vm.current_producer.contact_status = vm.current_booking.contact_status;
             });
         }
 
@@ -162,17 +189,22 @@
 
         function validateDate() {
             vm.dateErrorMessages = [];
-            if (vm.current_booking.preferred_date_from > vm.current_booking.preferred_date_until) vm.dateErrorMessages.push("Start date can't exceed end date");
-            if (vm.current_booking.preferred_date_from < vm.day_rule) vm.dateErrorMessages.push("Start date must be at least " + vm.add_days + " days in the future");
-            if (vm.current_booking.preferred_date_until < vm.day_rule) vm.dateErrorMessages.push("End date must be at least " + vm.add_days + " days in the future");
+            if (vm.to_improve_booking.preferred_date_from > vm.to_improve_booking.preferred_date_until) vm.dateErrorMessages.push("Start date can't exceed end date");
+            if (vm.to_improve_booking.preferred_date_from < vm.day_rule) vm.dateErrorMessages.push("Start date must be at least " + vm.add_days + " days in the future");
+            if (vm.to_improve_booking.preferred_date_until < vm.day_rule) vm.dateErrorMessages.push("End date must be at least " + vm.add_days + " days in the future");
         }
 
         function updateTruckBooking() {
+            vm.current_booking = angular.copy(vm.to_improve_booking);
+
             var booking = {
                 id: vm.current_booking.id,
+                current_status: 'TrytoImprove',
                 preferred_date_from: moment(vm.current_booking.preferred_date_from).format('YYYY-MM-DD'),
                 preferred_date_until: moment(vm.current_booking.preferred_date_until).format('YYYY-MM-DD')
             };
+
+            //
 
             bookingsService.save(booking).then(function () {
                 vm.showImprovePopup = false;
@@ -181,6 +213,8 @@
         }
 
         function showImprovePanel() {
+            vm.to_improve_booking = angular.copy(vm.current_booking);
+
             vm.showImprovePopup = true;
             vm.validateDate();
         }
@@ -209,20 +243,24 @@
         // STANDBY
         function validateStandByDate() {
             vm.standByErrorMessages = [];
-            if (vm.current_stand_by.preferred_date_from > vm.current_stand_by.preferred_date_until) {
+            if (vm.alter_stand_by.preferred_date_from > vm.alter_stand_by.preferred_date_until) {
                 vm.standByErrorMessages.push("Start date can't exceed end date!");
             }
-            if (vm.current_stand_by.preferred_date_from < vm.today) {
+            if (vm.alter_stand_by.preferred_date_from < vm.today) {
                 vm.standByErrorMessages.push("You can't select a date in the past!");
             }
         }
 
         function showAlterStandByPanel() {
+            vm.alter_stand_by = angular.copy(vm.current_stand_by);
+
             vm.showAlterStandByPopup = true;
             vm.validateStandByDate();
         }
 
         function updateStandBy() {
+            vm.current_stand_by = angular.copy(vm.alter_stand_by);
+
             var sb = {
                 id: vm.current_stand_by.id,
                 preferred_date_from: moment(vm.current_stand_by.preferred_date_from).format('YYYY-MM-DD'),
@@ -244,7 +282,7 @@
 
         // Producer
         function contactProducer(status) {
-           vm.current_booking.contact_status = status;
+            vm.current_booking.contact_status = status;
 
             bookingsService.save(vm.current_booking).then(function () {
                 vm.showProducerContact = false;
