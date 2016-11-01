@@ -1,0 +1,40 @@
+<div class="box page-grid-cell">
+    <div class="legend-title">Truck Details</div>
+
+    <div class="text-center">
+        <h4 class="text-black">This truck has 0 spaces available</h4>
+    </div>
+
+    <div class="col-xs-12 no-padding">
+        <div class="short-table-results">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>Load Size</th>
+                    <th>Producer</th>
+                    <th>Producer Number</th>
+                    <th class="text-center">Select</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="r in [1, 2, 3,4,5,6,7,8]" class="pointer">
+                    <td class="text-left">{{r}}</td>
+                    <td class="text-left">{{r}}</td>
+                    <td class="text-left">{{r}}</td>
+                    <td class="text-center">
+                        <input type="radio" ng-checked="r.isSelected"/>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="bottom-icon-remove">
+        <span class="button-remove"></span>
+    </div>
+
+    <div class="bottom-icon-container">
+        <span class="button-plus"></span>
+    </div>
+</div>

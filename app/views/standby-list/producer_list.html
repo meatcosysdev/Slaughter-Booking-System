@@ -1,0 +1,44 @@
+<div>
+    <div class="box page-grid-cell">
+        <div class="legend-title">Producer List</div>
+
+        <div class="col-xs-4 no-padding">
+            <div class="col-xs-12 no-padding">
+                <input type="number" ng-model="vm.searchProducerNumber" placeholder="Producer Number"/>
+            </div>
+            <div class="col-xs-12 no-padding">
+                <input type="number" ng-model="vm.searchProducerName"  placeholder="Producer Name"/>
+            </div>
+        </div>
+
+        <div class="col-xs-8 no-padding">
+            <div class="short-table-results">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Producer Number</th>
+                        <th>Producer Name</th>
+                        <th class="text-center">Select</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="r in [{name: 1}, {name: 2}]" class="pointer" ng-click="r.isSelected = !r.isSelected"
+                        ng-class="{'selected-row': r.isSelected}">
+                        <td class="text-left">{{r.name}}</td>
+                        <td class="text-left">{{r.name}}</td>
+
+                        <td class="text-center">
+                            <input type="radio" ng-checked="r.isSelected"/>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="bottom-icon-container">
+            <span class="button-search"></span>
+        </div>
+    </div>
+</div>
+
