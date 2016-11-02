@@ -257,3 +257,8 @@ ul.producer-details-list {
 .popup-label {
     min-width: 90px;
 }
+
+.cancelled-load {
+    color: red !important;
+    font-weight: 600;
+}

@@ -47,6 +47,7 @@
         vm.showImprovePanel = showImprovePanel;
         vm.showAlterStandByPanel = showAlterStandByPanel;
         vm.validateDate = validateDate;
+        vm.loadStandByDetails = loadStandByDetails;
 
         vm.showAlterLoadConfirmation = showAlterLoadConfirmation;
         vm.validateStandByDate = validateStandByDate;
@@ -68,15 +69,17 @@
 
         function loadSupplyStreams() {
             bookingsService.get_supply_streams().then(function (result) {
-                vm.streams = result;
-                //if (vm.streams.length) vm.selected_stream = vm.streams[0].id;
+                vm.streams = result || [];
+                vm.streams.unshift({id: 0, name: '- Stream -'});
+                vm.selected_stream = vm.streams[0].id;
             });
         }
 
         function loadFacilities() {
             bookingsService.get_facilities().then(function (result) {
-                vm.facilities = result;
-                //if (vm.facilities.length) vm.selected_facility = vm.facilities[0].id;
+                vm.facilities = result || [];
+                vm.facilities.unshift({id: 0, name: '- Facility -'});
+                 vm.selected_facility = vm.facilities[0].id;
             });
         }
 
@@ -93,28 +96,38 @@
 
             bookingsService.get_all(filters).then(function (result) {
                 vm.truck_bookings = result.map(function (t) {
-                    t.allocated_date = moment(t.allocated_date).format('DD/MM/YYYY');
+                    t.allocated_date = moment(t.delivery_date).format('DD/MM/YYYY');
                     t.preferred_date_from = moment(t.preferred_date_from).toDate();
                     t.preferred_date_until = moment(t.preferred_date_until).toDate();
                     return t;
                 });
-
+                vm.selectBookingToImprove();
             });
         }
 
         function loadAllBookings() {
             bookingsService.get_all().then(function (result) {
                 vm.truck_bookings = result.map(function (t) {
-                    t.allocated_date = moment(t.allocated_date).format('DD/MM/YYYY');
+                    t.allocated_date = moment(t.delivery_date).format('DD/MM/YYYY');
                     t.preferred_date_from = moment(t.preferred_date_from).toDate();
                     t.preferred_date_until = moment(t.preferred_date_until).toDate();
                     return t;
                 });
 
+                vm.selectBookingToImprove();
             });
         }
 
         function selectBookingToImprove(b) {
+
+            if (!b) {
+                delete vm.current_booking;
+                delete vm.truck_loads;
+                return;
+            }
+
+
+            vm.truck_loads = [];
             b.isSelected = !b.isSelected;
 
             vm.truck_bookings.forEach(function (t) {
@@ -138,20 +151,12 @@
         function getTruckLoads(booking_id) {
             bookingsLoadsService.get_all().then(function (result) {
                 vm.truck_loads = result.filter(function (load) {
-                    return load.booking_truck_id == booking_id && load.current_status != 'cancelled';
+                    return load.booking_truck_id == booking_id;
                 });
 
                 // FIND STANDBY BOOKING
                 if (vm.current_booking.current_status == 'stand-by') {
                     vm.disableImprovement = true;
-
-                    // TODO
-                    var standByID = 3;
-                    bookingsService.get_booking_standing_by(standByID).then(function (response) {
-                        vm.current_stand_by = response;
-                        vm.current_stand_by.preferred_date_from = moment(vm.current_stand_by.preferred_date_from).toDate();
-                        vm.current_stand_by.preferred_date_until = moment(vm.current_stand_by.preferred_date_until).toDate();
-                    })
                 }
             });
         }
@@ -177,10 +182,24 @@
                 // Get producer details
                 vm.getProducerDetails(vm.current_load.producer_id);
 
+                // Load standBy details
+                if (vm.current_booking.current_status == 'stand-by' && vm.current_load.standby_id) {
+                    vm.loadStandByDetails(vm.current_load.standby_id);
+                }
+
             } else {
+                delete vm.current_stand_by;
                 delete vm.current_load;
                 delete vm.current_producer;
             }
+        }
+
+        function loadStandByDetails(standByID) {
+            bookingsService.get_booking_standing_by(standByID).then(function (response) {
+                vm.current_stand_by = response;
+                vm.current_stand_by.preferred_date_from = moment(vm.current_stand_by.preferred_date_from).toDate();
+                vm.current_stand_by.preferred_date_until = moment(vm.current_stand_by.preferred_date_until).toDate();
+            })
         }
 
         function validateDate() {
@@ -191,11 +210,12 @@
         }
 
         function updateTruckBooking() {
+            vm.to_improve_booking.current_status = 'TrytoImprove';
             vm.current_booking = angular.copy(vm.to_improve_booking);
 
             var booking = {
                 id: vm.current_booking.id,
-                current_status: 'TrytoImprove',
+                current_status: vm.current_booking.current_status,
                 preferred_date_from: moment(vm.current_booking.preferred_date_from).format('YYYY-MM-DD'),
                 preferred_date_until: moment(vm.current_booking.preferred_date_until).format('YYYY-MM-DD')
             };
@@ -279,6 +299,7 @@
         // Producer
         function contactProducer(status) {
             vm.current_booking.contact_status = status;
+            vm.current_producer.contact_status = vm.current_booking.contact_status;
 
             bookingsService.save(vm.current_booking).then(function () {
                 vm.showProducerContact = false;

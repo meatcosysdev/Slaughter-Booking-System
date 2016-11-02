@@ -9,24 +9,24 @@
                     <th>Load ID</th>
                     <th>Load Size</th>
                     <th>Producer Number</th>
-                    <th class="text-center">Select</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr ng-repeat="load in vm.truck_loads" class="pointer" ng-click="vm.selectLoad(load)" ng-class="{'success' : load.isSelected}">
+                <tr ng-repeat="load in vm.truck_loads" class="pointer" ng-click="vm.selectLoad(load)"
+                    ng-class="{'success' : load.isSelected, 'cancelled-load': load.current_status == 'cancelled'}"
+                        title="{{load.current_status}}">
                     <td class="text-left">{{load.id}}</td>
                     <td class="text-left">{{load.quantity}}</td>
                     <td class="text-left">{{load.producer_no}}</td>
-                    <td class="text-center">
-                        <input type="radio" ng-checked="load.isSelected"/>
-                    </td>
                 </tr>
                 </tbody>
             </table>
         </div>
 
         <div class="col-xs-6 col-xs-offset-3 margin-top10">
-            <button class="btn-wide pointer btn-default" ng-disabled="!vm.current_load || vm.current_booking.current_status == 'stand-by'" ng-click="vm.showAlterLoadPopup=true">
+            <button class="btn-wide pointer btn-default"
+                    ng-disabled="!vm.current_load || vm.current_booking.current_status == 'stand-by' || vm.current_load.current_status == 'cancelled'"
+                    ng-click="vm.showAlterLoadPopup=true">
                 <div class="btn-content">
                     <div class="display_table">
                         <div class="table-cell">Alter Load</div>

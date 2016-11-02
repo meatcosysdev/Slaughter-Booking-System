@@ -54,11 +54,10 @@
                         <thead>
                         <tr>
                             <th>Truck ID</th>
-                            <th>Allocated Date</th>
+                            <th>Delivery Date</th>
                             <th>Truck Size</th>
                             <th>Loads</th>
                             <th>Status</th>
-                            <th class="text-center">Select</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -70,10 +69,6 @@
                             <td class="text-left">{{r.truck_size}}</td>
                             <td class="text-left">{{r.loads_number}}</td>
                             <td class="text-left">{{r.current_status}}</td>
-
-                            <td class="text-center">
-                                <input type="radio" ng-checked="r.isSelected"/>
-                            </td>
                         </tr>
                         </tbody>
                     </table>
