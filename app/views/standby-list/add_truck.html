@@ -2,29 +2,56 @@
     <div class="legend-title">Add truck</div>
 
     <div class="truck-details">
-        <div class="col-xs-6 no-padding">
-            <label>StandBy From:</label>
-            <input type="date" ng-model="vm.fromDate"/>
-        </div>
+        <form novalidate name="truckForm"  class="text-center">
+            <div class="col-xs-6 no-padding">
+                <label>StandBy From:</label>
+                <input type="date"
+                       ng-required="true"
+                       ng-change="vm.validateDate()"
+                       ng-model="vm.current_truck.preferred_date_from"/>
+            </div>
 
-        <div class="col-xs-6 no-padding">
-            <label>StandBy To:</label>
-            <input type="date" ng-model="vm.toDate"/>
-        </div>
+            <div class="col-xs-6 no-padding">
+                <label>StandBy To:</label>
+                <input type="date"
+                       ng-change="vm.validateDate()"
+                       ng-required="true"
+                       ng-model="vm.current_truck.preferred_date_until"/>
+            </div>
 
-        <div class="col-xs-9 col-xs-offset-3 margin-top20">
-            <label>Lead Days:</label>
-            <input type="date" ng-model="vm.leadDays"/>
-        </div>
 
-        <div class="col-xs-9 col-xs-offset-3 margin-top10">
-            <label>Truck Size:</label>
-            <input type="number" ng-model="vm.truckSize"/>
-        </div>
-    </div>
+            <div class="col-xs-12 margin-top10" ng-if="vm.dateErrorMessages">
+                <ul class="error-list">
+                    <li ng-repeat="e in vm.dateErrorMessages" class="col-xs-12 alert-danger">{{e}}</li>
+                </ul>
+            </div>
 
-    <div class="bottom-icon-container">
-        <span class="button-plus"></span>
+            <div class="col-xs-9 col-xs-offset-3 margin-top20">
+                <label>Lead Days:</label>
+                <input type="number"
+                       ng-required="true"
+                       ng-model="vm.current_truck.lead_days"/>
+            </div>
+
+            <div class="col-xs-9 col-xs-offset-3 margin-top10">
+                <label>Truck Size:</label>
+                <input type="number"
+                       ng-required="true"
+                       ng-model="vm.current_truck.truck_size"/>
+            </div>
+        </form>
+
+        <div class="col-xs-6 col-xs-offset-3 no-padding">
+            <button class="btn-wide pointer btn-default"
+                    ng-disabled="!truckForm.$valid || vm.dateErrorMessages.length > 0"
+                    ng-click="vm.addNewTruck()">
+                <div class="btn-content">
+                    <div class="display_table">
+                        <div class="table-cell">{{vm.current_truck.wasAdded ? "UPDATE" : 'ADD'}}</div>
+                    </div>
+                </div>
+            </button>
+        </div>
     </div>
 </div>
 

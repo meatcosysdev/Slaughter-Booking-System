@@ -1,40 +1,60 @@
 <div class="box page-grid-cell">
     <div class="legend-title">Truck Details</div>
 
-    <div class="text-center">
-        <h4 class="text-black">This truck has 0 spaces available</h4>
-    </div>
 
-    <div class="col-xs-12 no-padding">
-        <div class="short-table-results">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>Load Size</th>
-                    <th>Producer</th>
-                    <th>Producer Number</th>
-                    <th class="text-center">Select</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="r in [1, 2, 3,4,5,6,7,8]" class="pointer">
-                    <td class="text-left">{{r}}</td>
-                    <td class="text-left">{{r}}</td>
-                    <td class="text-left">{{r}}</td>
-                    <td class="text-center">
-                        <input type="radio" ng-checked="r.isSelected"/>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+    <div ng-if="vm.current_truck.wasAdded">
+        <div class="text-center">
+            <h4 class="text-black">This truck has {{vm.current_truck.space_left}} spaces available</h4>
         </div>
-    </div>
 
-    <div class="bottom-icon-remove">
-        <span class="button-remove"></span>
-    </div>
+        <div class="col-xs-12 no-padding">
+            <div class="truck-loads-results">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th>Load Size</th>
+                        <th>Producer</th>
+                        <th>Producer Number</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="l in vm.current_truck.loads" class="pointer"
+                        ng-click="vm.selectTruckLoad(l, $index)"
+                        ng-class="{'success' : l.isSelected}">
+                        <td class="text-left">{{l.load_size}}</td>
+                        <td class="text-left">{{l.producer_no}}</td>
+                        <td class="text-left">{{l.legal_name}}</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-    <div class="bottom-icon-container">
-        <span class="button-plus"></span>
+        <div class="col-xs-3">
+            <!-- <span class="button-remove"></span>-->
+            <button class="btn-wide pointer btn-default"
+                    ng-disabled="!vm.current_load"
+                    ng-click="vm.removeProducerLoadFromTruck()">
+                <div class="btn-content">
+                    <div class="display_table">
+                        <div class="table-cell">REMOVE</div>
+                    </div>
+                </div>
+            </button>
+        </div>
+
+        <div class="col-xs-3 col-xs-offset-3">
+            <div class="col-xs-6 col-xs-offset-3 no-padding">
+                <button class="btn-wide pointer btn-default"
+                        ng-disabled="vm.current_truck.loads.length == 0"
+                        ng-click="vm.saveStandBy()">
+                    <div class="btn-content">
+                        <div class="display_table">
+                            <div class="table-cell">SAVE</div>
+                        </div>
+                    </div>
+                </button>
+            </div>
+        </div>
     </div>
 </div>

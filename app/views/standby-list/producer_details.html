@@ -1,32 +1,43 @@
 <div class="box page-grid-cell">
-    <div class="legend-title">Producer List</div>
+    <div class="legend-title">Producer Details</div>
 
     <ul class="producer-details">
         <li>
             <span>Producer</span>
         </li>
         <li>
-            <div>Producer Number: 12345</div>
+            <div>Producer Number: {{vm.current_producer.producer_no}}</div>
         </li>
         <li>
-            <div>Merit point: 72</div>
+            <div>Name: {{vm.current_producer.legal_name}}</div>
         </li>
         <li>
-            <div>Phone number: 12345678</div>
+            <div>Phone number: {{vm.current_producer.telephone_no}}</div>
         </li>
         <li>
-            <div>Mobile number: 12345678</div>
+            <div>Mobile number: {{vm.current_producer.sms_no}}</div>
         </li>
         <li>
-            <div>Email: jac@knives.na</div>
+            <div>Email: {{vm.current_producer.email_address}}</div>
         </li>
 
         <li>
-            Load size: <input placeholder="Load size" ng-mode="vm.loadSize"/>
+            Load size: <input placeholder="Load size"
+                              ng-disabled="!vm.current_producer.producer_no"
+                              ng-model="vm.current_producer.load_size"/>
         </li>
     </ul>
 
+
     <div class="bottom-icon-container">
-        <span class="button-plus"></span>
+        <button class="btn-wide pointer btn-default"
+                ng-disabled="!(vm.current_producer  && vm.current_producer.load_size && vm.current_truck.wasAdded)"
+                ng-click="vm.addProducerLoadToTruck()">
+            <div class="btn-content">
+                <div class="display_table">
+                    <div class="table-cell">ADD</div>
+                </div>
+            </div>
+        </button>
     </div>
 </div>

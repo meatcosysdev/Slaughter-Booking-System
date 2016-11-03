@@ -14,12 +14,13 @@
             contact_producer: contact_producer
         };
 
-        function get_all() {
+        function get_all(filters) {
             var defer = $q.defer();
 
             $http({
                 url: '/api/producers/',
-                method: "GET"
+                method: "POST",
+                data: { filters: filters}
             }).then(function (response) {
                     defer.resolve(response.data);
                 },
