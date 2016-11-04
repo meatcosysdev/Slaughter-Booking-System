@@ -18,7 +18,6 @@
                     <tr>
                         <th>Producer Number</th>
                         <th>Producer Name</th>
-                        <th class="text-center">Select</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -26,10 +25,6 @@
                         ng-class="{'success' : p.isSelected}">
                         <td class="text-left">{{p.producer_no}}</td>
                         <td class="text-left">{{p.legal_name}}</td>
-
-                        <td class="text-center">
-                            <input type="radio" ng-checked="r.isSelected"/>
-                        </td>
                     </tr>
                     </tbody>
                 </table>

@@ -2,11 +2,11 @@
     angular.module('BookingsApp')
         .controller('StandbyListController', standbyListController);
 
-    standbyListController.$inject = ['$state', 'producerService', 'bookingsService', 'bookingsLoadsService'];
+    standbyListController.$inject = ['$timeout', 'producerService', 'bookingsService', 'bookingsLoadsService'];
 
 
     // Declarations
-    function standbyListController($state, producerService, bookingsService, bookingsLoadsService) {
+    function standbyListController($timeout, producerService, bookingsService, bookingsLoadsService) {
         var vm = this;
 
         // PROPERTIES
@@ -15,8 +15,6 @@
         vm.current_truck = {
             preferred_date_from: moment().toDate(),
             preferred_date_until: moment().toDate(),
-            lead_days: 2,
-            truck_size: 2,
         };
 
         // METHODS
@@ -29,7 +27,6 @@
         vm.saveStandBy = saveStandBy;
         vm.onSaveStandByEnd = onSaveStandByEnd;
 
-        vm.goto = goto;
         vm.validateDate = validateDate;
 
         // TODO remove this
@@ -104,43 +101,62 @@
         }
 
         function saveStandBy() {
-            //console.log(vm.current_truck);
+            console.log(vm.current_truck);
 
             vm.merit_point = 10;
+            vm.agreement_form_line_id = 1;
+            vm.supply_stream_id = 1;
+            vm.origin = 'test';
 
             var truck_booking = {
                 preferred_date_from: moment(vm.current_truck.preferred_date_from).format('YYYY-MM-DD'),
                 preferred_date_until: moment(vm.current_truck.preferred_date_until).format('YYYY-MM-DD'),
                 run_date: moment(vm.current_truck.preferred_date_from).format('YYYY-MM-DD'),
-                booking_date: moment().format('YYYY-MM-DD') ,
-                delivery_date: moment().format('YYYY-MM-DD') ,
+                booking_date: moment().format('YYYY-MM-DD'),
+                delivery_date: moment().format('YYYY-MM-DD'),
                 agreement_type_id: 1,
                 supply_stream_id: 1,
                 facility_id: 1,
                 merit_point: vm.merit_point,
                 truck_size: vm.current_truck.truck_size,
-                current_status: 'created'
+                current_status: 'stand-by',
             }
 
-            bookingsService.save(truck_booking).then(function (response) {
+            // SAVE TRUCK-BOOKING
+            bookingsService.save(truck_booking).then(function (new_truck_booking) {
                 var sb = {
                     preferred_date_from: moment(vm.current_truck.preferred_date_from).format('YYYY-MM-DD'),
                     preferred_date_until: moment(vm.current_truck.preferred_date_until).format('YYYY-MM-DD'),
                     lead_days: vm.current_truck.lead_days,
                     truck_size: vm.current_truck.truck_size,
-                    booking_truck_id: response.id,
+                    booking_truck_id: new_truck_booking.id,
                     merit_point: vm.merit_point,
                     current_status: 'created',
-                    supply_stream_id: 1, //Where is this coming from???
+                    supply_stream_id: vm.supply_stream_id
                 };
 
+                // SAVE STANDBY
                 bookingsService.save_stand_by(sb).then(function (sb_response) {
-                    var load = {
-                        standby_id: sb_response.id,
-                    };
-                    //bookingsLoadsService.save(load).then(function () {
-                        vm.onSaveStandByEnd();
-                    //});
+                    vm.current_truck.loads.forEach(function (l) {
+
+                        var load = {
+                            standby_id: sb_response.id,
+                            booking_truck_id: new_truck_booking.id,
+                            agreement_form_line_id:  vm.agreement_form_line_id,
+                            producer_no: l.producer_no,
+                            quantity: l.load_size,
+                            merit_point: vm.merit_point,
+                            origin: vm.origin,
+                            current_status: 'created',
+                        };
+
+                        // SAVE TRUCK BOOKING LOAD
+                        bookingsLoadsService.save(load);
+                    });
+
+                    $timeout(function () {
+                       // vm.onSaveStandByEnd();
+                    }, 2000)
                 });
             });
         }
@@ -164,10 +180,6 @@
             if (vm.current_truck.preferred_date_from > vm.current_truck.preferred_date_until) vm.dateErrorMessages.push("Start date can't exceed end date");
             if (vm.current_truck.preferred_date_from < vm.day_rule) vm.dateErrorMessages.push("Start date can't be in the past");
             if (vm.current_truck.preferred_date_until < vm.day_rule) vm.dateErrorMessages.push("End date can't be in the past");
-        }
-
-        function goto(state) {
-            $state.go(state, {data: {truck: vm.truck}});
         }
     }
 })();

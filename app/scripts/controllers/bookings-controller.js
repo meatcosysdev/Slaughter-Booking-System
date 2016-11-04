@@ -95,6 +95,7 @@
             if (vm.selected_stream) filters.selected_stream = vm.selected_stream;
 
             bookingsService.get_all(filters).then(function (result) {
+
                 vm.truck_bookings = result.map(function (t) {
                     t.allocated_date = moment(t.delivery_date).format('DD/MM/YYYY');
                     t.preferred_date_from = moment(t.preferred_date_from).toDate();
@@ -107,6 +108,8 @@
 
         function loadAllBookings() {
             bookingsService.get_all().then(function (result) {
+
+
                 vm.truck_bookings = result.map(function (t) {
                     t.allocated_date = moment(t.delivery_date).format('DD/MM/YYYY');
                     t.preferred_date_from = moment(t.preferred_date_from).toDate();
@@ -149,10 +152,8 @@
         }
 
         function getTruckLoads(booking_id) {
-            bookingsLoadsService.get_all().then(function (result) {
-                vm.truck_loads = result.filter(function (load) {
-                    return load.booking_truck_id == booking_id;
-                });
+            bookingsLoadsService.get_all({booking_truck_id: booking_id}).then(function (result) {
+                vm.truck_loads = result;
 
                 // FIND STANDBY BOOKING
                 if (vm.current_booking.current_status == 'stand-by') {
@@ -161,8 +162,8 @@
             });
         }
 
-        function getProducerDetails(producer_id) {
-            producerService.get_by_id(producer_id).then(function (result) {
+        function getProducerDetails(producer_no) {
+            producerService.get_by_producer_no(producer_no).then(function (result) {
                 vm.current_producer = result;
                 vm.current_producer.merit_point = vm.current_load.merit_point;
                 vm.contactMethod = vm.current_producer.contact_status = vm.current_booking.contact_status;
@@ -180,7 +181,7 @@
                 vm.current_load = load;
 
                 // Get producer details
-                vm.getProducerDetails(vm.current_load.producer_id);
+                vm.getProducerDetails(vm.current_load.producer_no);
 
                 // Load standBy details
                 if (vm.current_booking.current_status == 'stand-by' && vm.current_load.standby_id) {
