@@ -154,7 +154,7 @@
                     });
 
                     $timeout(function () {
-                       // vm.onSaveStandByEnd();
+                       vm.onSaveStandByEnd();
                     }, 2000)
                 });
             });

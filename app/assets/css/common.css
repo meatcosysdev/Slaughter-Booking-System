@@ -9,6 +9,12 @@ h1, h2, h3, h4, h5, h6 {
     margin-bottom: 5px;
 }
 
+
+div[class^="col-xs"] {
+    padding: 0 5px !important;
+}
+
+
 .page-container {
     margin: 25px 15px;
     min-width: 650px;

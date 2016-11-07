@@ -7,11 +7,6 @@
     position: relative;
 }
 
-
-div[class^="col-xs"] {
-    padding: 0 !important;
-}
-
 button[disabled=disabled], button:disabled {
     color: lightgray !important;
 }
@@ -163,7 +158,6 @@ tr.selected-row > td {
 
 .filters-container {
     height: 250px;
-    overflow-y: auto;
     width: 100%;
 }
 
@@ -267,18 +261,20 @@ ul.producer-details-list {
     max-width: 100%;
     width: 100%;
     border: solid 1px lightgray;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 20px;
-    padding: 0 5px;
-    border-radius: 5px;
+    padding: 5px;
+    border-radius: 10px;
+    text-align: left;
 }
 
 .bookings-producers-list select {
     width: 90%;
     background: transparent;
-    padding: 2px 5px;
-    font-size: 12px;
+    padding: 6px 5px;
+    font-size: 14px;
     border: 1px solid lightgray;
+    border-radius: 10px;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -307,7 +303,7 @@ ul.producer-details-list {
     border: solid 1px lightgray;
     padding: 5px;
     margin-bottom: 5px;
-    text-align: center;
+    text-align: left;
     outline: none;
 }
 
