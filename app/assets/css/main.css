@@ -59,7 +59,6 @@ tr.selected-row > td {
     color: #000;
 }
 
-
 .btn-content {
     position: absolute;
     height: 100%;
@@ -81,7 +80,30 @@ tr.selected-row > td {
 }
 
 .page-grid-cell {
-    height: 300px;
+    height: 330px;
+}
+
+
+.action-controls {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+.action-controls-remove {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+}
+
+.btn-action {
+    background: transparent;
+    border: none;
+    outline: none;
+}
+
+.not-allowed {
+    cursor: not-allowed;
 }
 
 /* --------------------------------------------------- CHART --------------------------------------------------- */
@@ -136,7 +158,6 @@ tr.selected-row > td {
 
 .filters-container {
     height: 250px;
-    overflow-y: auto;
     width: 100%;
 }
 
@@ -145,6 +166,12 @@ tr.selected-row > td {
     overflow-y: auto;
     width: 100%;
     border: solid 2px lightgray;
+}
+
+.truck-loads-results {
+    max-height: 200px;
+    overflow-y: auto;
+    width: 100%;
 }
 
 .search-btn {
@@ -220,6 +247,7 @@ ul.producer-details-list {
     position: absolute;
     bottom: 10px;
     right: 10px;
+    min-width: 50px;
 }
 
 .bottom-icon-remove {
@@ -233,18 +261,20 @@ ul.producer-details-list {
     max-width: 100%;
     width: 100%;
     border: solid 1px lightgray;
-    font-size: 12px;
+    font-size: 14px;
     line-height: 20px;
-    padding: 0 5px;
-    border-radius: 5px;
+    padding: 5px;
+    border-radius: 10px;
+    text-align: left;
 }
 
 .bookings-producers-list select {
     width: 90%;
     background: transparent;
-    padding: 2px 5px;
-    font-size: 12px;
+    padding: 6px 5px;
+    font-size: 14px;
     border: 1px solid lightgray;
+    border-radius: 10px;
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -261,4 +291,61 @@ ul.producer-details-list {
 .cancelled-load {
     color: red !important;
     font-weight: 600;
+}
+
+.standby-producers-list {
+    text-align: left;
+}
+
+
+.user-inputs {
+    border-radius: 10px;
+    border: solid 1px lightgray;
+    padding: 5px;
+    margin-bottom: 5px;
+    text-align: left;
+    outline: none;
+}
+
+.standby-producers-list .list-header {
+    font-size: 15px;
+    font-weight: 500;
+    width: 100%;
+    float: left;
+    border-bottom: solid 2px;
+}
+
+.standby-producers-list ul {
+    float: left;
+    list-style: none;
+    margin-left: 0;
+    padding-left: 0;
+    width: 100%;
+    height: 180px;
+    overflow-y: auto;
+}
+
+.standby-producers-list ul li {
+    float: left;
+    padding: 5px 0;
+    width: 100%;
+}
+
+.standby-producers-list ul li:nth-child(odd) {
+    background: #FAFAFA;
+}
+
+.standby-producers-list div.success {
+    background-color: #dff0d8; !important;
+}
+
+ul.producer-details {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.producer-details li {
+    float: left;
+    padding: 5px 0;
+    width: 100%;
 }

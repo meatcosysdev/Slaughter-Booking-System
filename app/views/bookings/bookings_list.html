@@ -62,7 +62,8 @@
                         </thead>
                         <tbody>
 
-                        <tr ng-repeat="r in vm.truck_bookings | orderBy: 'id'" class="pointer" ng-click="vm.selectBookingToImprove(r)"
+                        <tr ng-repeat="r in vm.truck_bookings | orderBy: 'id'" class="pointer"
+                            ng-click="vm.selectBookingToImprove(r)"
                             ng-class="{'success' : r.isSelected}">
                             <td class="text-left">{{r.id}}</td>
                             <td class="text-left">{{r.allocated_date}}</td>

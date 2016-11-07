@@ -33,6 +33,13 @@
                 controller: 'BookingsController as vm',
                 templateUrl: 'views/bookings/index.html'
             })
+
+            // STANDBY-LIST
+            .state('standby-list', {
+                url: "/standby-list",
+                controller: 'StandbyListController as vm',
+                templateUrl: 'views/standby-list/index.html'
+            })
         ;
     }
 

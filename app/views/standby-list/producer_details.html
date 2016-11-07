@@ -1,0 +1,40 @@
+<div class="box page-grid-cell">
+    <div class="legend-title">Producer Details</div>
+
+    <ul class="producer-details noselect">
+        <li>
+            <h4>Producer</h4>
+        </li>
+        <li>
+            <label>Producer Number:</label>&nbsp;{{vm.current_producer.producer_no}}
+        </li>
+        <li>
+            <label>Name:</label>&nbsp;{{vm.current_producer.legal_name}}
+        </li>
+        <li>
+            <label>Phone number:</label>&nbsp;{{vm.current_producer.telephone_no}}
+        </li>
+        <li>
+            <label>Mobile number:</label>&nbsp;{{vm.current_producer.sms_no}}
+        </li>
+        <li>
+            <label>Email:</label>&nbsp;{{vm.current_producer.email_address}}
+        </li>
+
+        <li>
+            <label>Load size:&nbsp;</label><input placeholder="Load size"
+                              class="user-inputs"
+                              ng-disabled="!vm.current_producer.producer_no"
+                              ng-model="vm.current_producer.load_size"/>
+        </li>
+    </ul>
+
+
+    <div class="action-controls">
+        <button class="btn-action"
+                ng-disabled="!(vm.current_producer  && vm.current_producer.load_size && vm.current_truck.wasAdded)"
+                ng-click="vm.addProducerLoadToTruck()">
+            <div class="button-plus" ng-class="{'not-allowed': !(vm.current_producer  && vm.current_producer.load_size && vm.current_truck.wasAdded)}"></div>
+        </button>
+    </div>
+</div>
