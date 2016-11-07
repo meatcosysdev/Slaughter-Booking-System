@@ -14,13 +14,6 @@ h1, h2, h3, h4, h5, h6 {
     min-width: 650px;
 }
 
-@media screen and (min-width: 760px) {
-    .container {
-        padding-right: 0px;
-        padding-left: 0px;
-    }
-}
-
 @media print {
     .container {
         width: 95% !important;
@@ -238,6 +231,7 @@ label {
     width: 30px;
     height: 30px;
     cursor: pointer;
+    float:right;
 }
 
 .button-plus {
@@ -246,17 +240,28 @@ label {
     width: 30px;
     height: 30px;
     display: block;
-    cursor: pointer;
+
+    font-size: 150%;
+    position: relative;
+    overflow: hidden;
+    margin: 5px auto auto;
 }
 
 .button-remove {
     background-image: url("../img/remove.png");
     background-size: cover;
-    width: 15px;
-    height: 15px;
+    width: 25px;
+    height: 25px;
     cursor: pointer;
 }
 
+.noselect {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
 
 
 

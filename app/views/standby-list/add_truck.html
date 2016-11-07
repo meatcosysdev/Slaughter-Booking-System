@@ -8,6 +8,7 @@
                 <input type="date"
                        ng-required="true"
                        ng-change="vm.validateDate()"
+                       class="user-inputs"
                        ng-model="vm.current_truck.preferred_date_from"/>
             </div>
 
@@ -16,6 +17,7 @@
                 <input type="date"
                        ng-change="vm.validateDate()"
                        ng-required="true"
+                       class="user-inputs"
                        ng-model="vm.current_truck.preferred_date_until"/>
             </div>
 
@@ -26,30 +28,30 @@
                 </ul>
             </div>
 
-            <div class="col-xs-9 col-xs-offset-3 margin-top20">
+            <div class="col-xs-12 text-center margin-top20">
                 <label>Lead Days:</label>
                 <input type="number"
                        ng-required="true"
+                       class="user-inputs"
+                       placeholder="Lead days"
                        ng-model="vm.current_truck.lead_days"/>
             </div>
 
-            <div class="col-xs-9 col-xs-offset-3 margin-top10">
+            <div class="col-xs-12 text-center margin-top10">
                 <label>Truck Size:</label>
                 <input type="number"
+                       class="user-inputs"
                        ng-required="true"
+                       placeholder="Truck size"
                        ng-model="vm.current_truck.truck_size"/>
             </div>
         </form>
 
-        <div class="col-xs-6 col-xs-offset-3 no-padding">
-            <button class="btn-wide pointer btn-default"
+        <div class="action-controls">
+            <button class="btn-action"
                     ng-disabled="!truckForm.$valid || vm.dateErrorMessages.length > 0"
                     ng-click="vm.addNewTruck()">
-                <div class="btn-content">
-                    <div class="display_table">
-                        <div class="table-cell">{{vm.current_truck.wasAdded ? "UPDATE" : 'ADD'}}</div>
-                    </div>
-                </div>
+                    <div class="button-plus" ng-class="{'not-allowed': !truckForm.$valid || vm.dateErrorMessages.length > 0}"></div>
             </button>
         </div>
     </div>

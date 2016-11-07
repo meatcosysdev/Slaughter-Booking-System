@@ -32,7 +32,7 @@
         // TODO remove this
         vm.getProducersList();
 
-        // IMPLEMENTATIONS
+        //  ----------------------------------- IMPLEMENTATIONS -----------------------------------
         // PRODUCER
         function getProducersList() {
             producerService.get_all(vm.search).then(function (response) {
@@ -98,11 +98,10 @@
         function removeProducerLoadFromTruck() {
             vm.current_truck.loads.splice(vm.current_load.index, 1);
             vm.current_truck.space_left = parseInt(vm.current_truck.space_left) + parseInt(vm.current_load.load_size);
+            delete vm.current_load;
         }
 
         function saveStandBy() {
-            console.log(vm.current_truck);
-
             vm.merit_point = 10;
             vm.agreement_form_line_id = 1;
             vm.supply_stream_id = 1;

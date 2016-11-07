@@ -7,6 +7,11 @@
     position: relative;
 }
 
+
+div[class^="col-xs"] {
+    padding: 0 !important;
+}
+
 button[disabled=disabled], button:disabled {
     color: lightgray !important;
 }
@@ -59,7 +64,6 @@ tr.selected-row > td {
     color: #000;
 }
 
-
 .btn-content {
     position: absolute;
     height: 100%;
@@ -82,6 +86,29 @@ tr.selected-row > td {
 
 .page-grid-cell {
     height: 330px;
+}
+
+
+.action-controls {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+}
+
+.action-controls-remove {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+}
+
+.btn-action {
+    background: transparent;
+    border: none;
+    outline: none;
+}
+
+.not-allowed {
+    cursor: not-allowed;
 }
 
 /* --------------------------------------------------- CHART --------------------------------------------------- */
@@ -268,4 +295,61 @@ ul.producer-details-list {
 .cancelled-load {
     color: red !important;
     font-weight: 600;
+}
+
+.standby-producers-list {
+    text-align: left;
+}
+
+
+.user-inputs {
+    border-radius: 10px;
+    border: solid 1px lightgray;
+    padding: 5px;
+    margin-bottom: 5px;
+    text-align: center;
+    outline: none;
+}
+
+.standby-producers-list .list-header {
+    font-size: 15px;
+    font-weight: 500;
+    width: 100%;
+    float: left;
+    border-bottom: solid 2px;
+}
+
+.standby-producers-list ul {
+    float: left;
+    list-style: none;
+    margin-left: 0;
+    padding-left: 0;
+    width: 100%;
+    height: 180px;
+    overflow-y: auto;
+}
+
+.standby-producers-list ul li {
+    float: left;
+    padding: 5px 0;
+    width: 100%;
+}
+
+.standby-producers-list ul li:nth-child(odd) {
+    background: #FAFAFA;
+}
+
+.standby-producers-list div.success {
+    background-color: #dff0d8; !important;
+}
+
+ul.producer-details {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.producer-details li {
+    float: left;
+    padding: 5px 0;
+    width: 100%;
 }

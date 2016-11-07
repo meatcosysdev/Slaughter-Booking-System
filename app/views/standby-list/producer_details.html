@@ -1,43 +1,40 @@
 <div class="box page-grid-cell">
     <div class="legend-title">Producer Details</div>
 
-    <ul class="producer-details">
+    <ul class="producer-details noselect">
         <li>
-            <span>Producer</span>
+            <h4>Producer</h4>
         </li>
         <li>
-            <div>Producer Number: {{vm.current_producer.producer_no}}</div>
+            <label>Producer Number:</label>&nbsp;{{vm.current_producer.producer_no}}
         </li>
         <li>
-            <div>Name: {{vm.current_producer.legal_name}}</div>
+            <label>Name:</label>&nbsp;{{vm.current_producer.legal_name}}
         </li>
         <li>
-            <div>Phone number: {{vm.current_producer.telephone_no}}</div>
+            <label>Phone number:</label>&nbsp;{{vm.current_producer.telephone_no}}
         </li>
         <li>
-            <div>Mobile number: {{vm.current_producer.sms_no}}</div>
+            <label>Mobile number:</label>&nbsp;{{vm.current_producer.sms_no}}
         </li>
         <li>
-            <div>Email: {{vm.current_producer.email_address}}</div>
+            <label>Email:</label>&nbsp;{{vm.current_producer.email_address}}
         </li>
 
         <li>
-            Load size: <input placeholder="Load size"
+            <label>Load size:&nbsp;</label><input placeholder="Load size"
+                              class="user-inputs"
                               ng-disabled="!vm.current_producer.producer_no"
                               ng-model="vm.current_producer.load_size"/>
         </li>
     </ul>
 
 
-    <div class="bottom-icon-container">
-        <button class="btn-wide pointer btn-default"
+    <div class="action-controls">
+        <button class="btn-action"
                 ng-disabled="!(vm.current_producer  && vm.current_producer.load_size && vm.current_truck.wasAdded)"
                 ng-click="vm.addProducerLoadToTruck()">
-            <div class="btn-content">
-                <div class="display_table">
-                    <div class="table-cell">ADD</div>
-                </div>
-            </div>
+            <div class="button-plus" ng-class="{'not-allowed': !(vm.current_producer  && vm.current_producer.load_size && vm.current_truck.wasAdded)}"></div>
         </button>
     </div>
 </div>
