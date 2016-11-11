@@ -29,9 +29,6 @@
 
         vm.validateDate = validateDate;
 
-        // TODO remove this
-        vm.getProducersList();
-
         //  ----------------------------------- IMPLEMENTATIONS -----------------------------------
         // PRODUCER
         function getProducersList() {

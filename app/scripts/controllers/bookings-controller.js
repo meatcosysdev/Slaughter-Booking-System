@@ -69,7 +69,7 @@
 
         function loadSupplyStreams() {
             bookingsService.get_supply_streams().then(function (result) {
-                vm.streams = result || [];
+                vm.streams = result['_embedded']['supplyStreams'] || [];
                 vm.streams.unshift({id: 0, name: '- Stream -'});
                 vm.selected_stream = vm.streams[0].id;
             });
@@ -77,7 +77,7 @@
 
         function loadFacilities() {
             bookingsService.get_facilities().then(function (result) {
-                vm.facilities = result || [];
+                vm.facilities = result['_embedded']['facilities'] || [];
                 vm.facilities.unshift({id: 0, name: '- Facility -'});
                  vm.selected_facility = vm.facilities[0].id;
             });
@@ -95,12 +95,15 @@
             if (vm.selected_stream) filters.selected_stream = vm.selected_stream;
 
             bookingsService.get_all(filters).then(function (result) {
-
                 vm.truck_bookings = result.map(function (t) {
-                    t.allocated_date = moment(t.delivery_date).format('DD/MM/YYYY');
+                    t['id'] = t['_links']['bookingTruck']['href'].split('/')[4];
+
+                    t.loads_number = 0; // TODO
+                    t.bookingDate = moment(t.bookingDate).format('DD/MM/YYYY');
+                    t.deliveryDate = moment(t.deliveryDate).format('DD/MM/YYYY');
                     t.preferred_date_from = moment(t.preferred_date_from).toDate();
                     t.preferred_date_until = moment(t.preferred_date_until).toDate();
-                    return t;
+
                 });
                 vm.selectBookingToImprove();
             });
@@ -108,12 +111,18 @@
 
         function loadAllBookings() {
             bookingsService.get_all().then(function (result) {
+                // TODO
+                console.log(result['_embedded'])
 
+                vm.truck_bookings = (result['_embedded']['bookingTrucks'] || []).map(function (t) {
+                    t['id'] = t['_links']['bookingTruck']['href'].split('/')[4];
 
-                vm.truck_bookings = result.map(function (t) {
-                    t.allocated_date = moment(t.delivery_date).format('DD/MM/YYYY');
+                    t.loads_number = 0; // TODO
+                    t.bookingDate = moment(t.bookingDate).format('DD/MM/YYYY');
+                    t.deliveryDate = moment(t.deliveryDate).format('DD/MM/YYYY');
                     t.preferred_date_from = moment(t.preferred_date_from).toDate();
                     t.preferred_date_until = moment(t.preferred_date_until).toDate();
+
                     return t;
                 });
 
@@ -122,13 +131,11 @@
         }
 
         function selectBookingToImprove(b) {
-
             if (!b) {
                 delete vm.current_booking;
                 delete vm.truck_loads;
                 return;
             }
-
 
             vm.truck_loads = [];
             b.isSelected = !b.isSelected;
@@ -141,7 +148,7 @@
                 vm.current_booking = b;
 
                 // Get booking_load details
-                vm.getTruckLoads(vm.current_booking.id);
+                vm.getTruckLoads();
 
             } else {
                 delete vm.current_booking;
@@ -151,8 +158,14 @@
             vm.disableImprovement = (vm.current_booking && vm.current_booking.allocated_date == vm.day_rule_str);
         }
 
-        function getTruckLoads(booking_id) {
-            bookingsLoadsService.get_all({booking_truck_id: booking_id}).then(function (result) {
+        function getTruckLoads() {
+            var url = vm.current_booking['_links']['bookingLoads']['href'];
+
+            // TODO
+            url = url.replace('http://localhost:8080', '');
+
+            bookingsLoadsService.get_truck_loads(url).then(function (result) {
+                console.log(result)
                 vm.truck_loads = result;
 
                 // FIND STANDBY BOOKING

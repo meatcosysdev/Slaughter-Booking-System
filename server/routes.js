@@ -2,11 +2,25 @@ var express = require('express');
 var router = express.Router();
 var path = require('path');
 var pg = require('pg');
+var request = require('request');
 
 // MODELS
 var CONFIG = require('./models/config').CONFIG;
 
 // -------------------------------------------- BOOKINGS --------------------------------------------
+router.get('/*', function (req, res, next) {
+    request(CONFIG.api_url + req.path , function (error, response, body) {
+        return res.status(200).send(body);
+    })
+});
+
+
+router.post('/*', function (req, res, next) {
+    request(CONFIG.api_url + req.path , function (error, response, body) {
+        return res.status(200).send(body);
+    })
+});
+
 router.post(CONFIG.serverUrl + '/api/bookings-list', function (req, res, next) {
     var results = [];
     var data = req.body;

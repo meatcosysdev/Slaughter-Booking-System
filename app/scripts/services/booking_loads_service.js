@@ -9,8 +9,9 @@
     // Declarations
     function bookingsLoadsService($http, $q) {
         return {
-            get_all: get_all,
+            //get_all: get_all,
             save: save,
+            get_truck_loads: get_truck_loads,
         };
 
         function save(load) {
@@ -35,11 +36,30 @@
             return defer.promise;
         }
 
+        function get_truck_loads(url) {
+            var defer = $q.defer();
+
+            $http({
+                url: url,
+                get: "POST",
+            }).then(function (response) {
+                    defer.resolve(response.data);
+                },
+                function (response) {
+                    defer.reject(response);
+                    if (response.data) {
+                        toastr.error(response.data.error, "Oops! Something went wrong!");
+                    }
+                });
+
+            return defer.promise;
+        }
+
         function get_all(filters) {
             var defer = $q.defer();
 
             $http({
-                url: '/api/booking-loads-list',
+                url: '/api/bookingLoads',
                 method: "POST",
                 data: {filters: filters}
             }).then(function (response) {

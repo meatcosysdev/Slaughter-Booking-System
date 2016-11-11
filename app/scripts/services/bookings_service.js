@@ -4,10 +4,10 @@
     angular.module('BookingsApp')
         .service('bookingsService', bookingsService);
 
-    bookingsService.$inject = ['$http', '$q'];
+    bookingsService.$inject = ['$http', '$q', 'CONFIG'];
 
     // Declarations
-    function bookingsService($http, $q) {
+    function bookingsService($http, $q, CONFIG) {
         return {
             get_all: get_all,
             save: save,
@@ -22,7 +22,7 @@
             var defer = $q.defer();
 
             $http({
-                url: '/api/bookings/',
+                url:  + CONFIG.api_url + '/bookings',
                 method: "POST",
                 data: booking
             }).then(function (response) {
@@ -44,7 +44,7 @@
             var defer = $q.defer();
 
             $http({
-                url: '/api/bookings-list/',
+                url: CONFIG.api_url + '/bookingTrucks',
                 data: { filters: filters },
                 method: "POST"
             }).then(function (response) {
@@ -126,7 +126,7 @@
             var defer = $q.defer();
 
             $http({
-                url: '/api/facilities/',
+                url: CONFIG.api_url + '/facilities',
                 method: "GET"
             }).then(function (response) {
                     defer.resolve(response.data);
@@ -145,7 +145,7 @@
             var defer = $q.defer();
 
             $http({
-                url: '/api/supply_streams/',
+                url: CONFIG.api_url + '/supplyStreams/',
                 method: "GET"
             }).then(function (response) {
                     defer.resolve(response.data);
