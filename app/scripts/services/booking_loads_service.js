@@ -4,10 +4,10 @@
     angular.module('BookingsApp')
         .service('bookingsLoadsService', bookingsLoadsService);
 
-    bookingsLoadsService.$inject = ['$http', '$q'];
+    bookingsLoadsService.$inject = ['$http', '$q' , 'CONFIG'];
 
     // Declarations
-    function bookingsLoadsService($http, $q) {
+    function bookingsLoadsService($http, $q, CONFIG) {
         return {
             //get_all: get_all,
             save: save,
@@ -18,7 +18,7 @@
             var defer = $q.defer();
 
             $http({
-                url: '/api/bookings_loads/',
+                url: CONFIG.api_url + '/bookingLoads',
                 method: "POST",
                 data: load
             }).then(function (response) {
@@ -42,26 +42,6 @@
             $http({
                 url: url,
                 get: "POST",
-            }).then(function (response) {
-                    defer.resolve(response.data);
-                },
-                function (response) {
-                    defer.reject(response);
-                    if (response.data) {
-                        toastr.error(response.data.error, "Oops! Something went wrong!");
-                    }
-                });
-
-            return defer.promise;
-        }
-
-        function get_all(filters) {
-            var defer = $q.defer();
-
-            $http({
-                url: '/api/bookingLoads',
-                method: "POST",
-                data: {filters: filters}
             }).then(function (response) {
                     defer.resolve(response.data);
                 },

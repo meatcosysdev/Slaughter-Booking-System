@@ -2,17 +2,20 @@
     angular.module('BookingsApp')
         .controller('StandbyListController', standbyListController);
 
-    standbyListController.$inject = ['$timeout', 'producerService', 'bookingsService', 'bookingsLoadsService'];
-
+    standbyListController.$inject = ['$timeout', 'producerService', 'bookingsService', 'bookingsLoadsService', 'CONFIG'];
 
     // Declarations
-    function standbyListController($timeout, producerService, bookingsService, bookingsLoadsService) {
+    function standbyListController($timeout, producerService, bookingsService, bookingsLoadsService, CONFIG) {
         var vm = this;
 
         // PROPERTIES
+        vm.standByStatusText = CONFIG.standby_status;
+
         vm.search = {};
         vm.day_rule = moment().toDate();
         vm.current_truck = {
+            lead_days: 2,
+            truck_size: 2,
             preferred_date_from: moment().toDate(),
             preferred_date_until: moment().toDate(),
         };
@@ -32,8 +35,13 @@
         //  ----------------------------------- IMPLEMENTATIONS -----------------------------------
         // PRODUCER
         function getProducersList() {
-            producerService.get_all(vm.search).then(function (response) {
-                vm.producers = response
+            producerService.get_all_producers(vm.search).then(function (response) {
+                console.log(response['_embedded'])
+                vm.producers = (response['_embedded']['producers'] || []).map(function(p) {
+                    p.id = p['_links']['producer']['href'].split('/').pop();
+
+                    return p;
+                });
             })
         }
 
@@ -46,7 +54,6 @@
 
             if (producer.isSelected) {
                 vm.current_producer = producer;
-                console.log(producer)
             } else {
                 delete vm.current_producer;
             }
@@ -60,8 +67,8 @@
 
             vm.current_truck['loads'].push({
                 load_size: vm.current_producer.load_size,
-                producer_no: vm.current_producer.producer_no,
-                legal_name: vm.current_producer.legal_name,
+                producerNo: vm.current_producer.producerNo,
+                legalName: vm.current_producer.legalName,
             });
 
             vm.current_truck.space_left = vm.current_truck.space_left - vm.current_producer.load_size;
@@ -105,18 +112,24 @@
             vm.origin = 'test';
 
             var truck_booking = {
-                preferred_date_from: moment(vm.current_truck.preferred_date_from).format('YYYY-MM-DD'),
-                preferred_date_until: moment(vm.current_truck.preferred_date_until).format('YYYY-MM-DD'),
-                run_date: moment(vm.current_truck.preferred_date_from).format('YYYY-MM-DD'),
-                booking_date: moment().format('YYYY-MM-DD'),
-                delivery_date: moment().format('YYYY-MM-DD'),
-                agreement_type_id: 1,
-                supply_stream_id: 1,
-                facility_id: 1,
-                merit_point: vm.merit_point,
-                truck_size: vm.current_truck.truck_size,
-                current_status: 'stand-by',
-            }
+                preferredDateFrom: moment(vm.current_truck.preferred_date_from).format('YYYY-MM-DD'),
+                preferredDateUntil: moment(vm.current_truck.preferred_date_until).format('YYYY-MM-DD'),
+                runDate: moment(vm.current_truck.preferred_date_from).format('YYYY-MM-DD'),
+                bookingDate: moment().format('YYYY-MM-DD'),
+                deliveryDate: moment().format('YYYY-MM-DD'),
+                agreementTypeId: 1,
+                supplyStreamId: 3,
+                facilityId: 1,
+                contactStatus: 'Please Notify',
+                meritPoint: vm.merit_point,
+                truckSize: vm.current_truck.truck_size,
+                currentStatus: vm.standByStatusText,
+                createdAt: moment().utc(),
+                createdBy: 'admin',
+                updatedAt: moment().utc(),
+                updatedBy: 'admin'
+            };
+
 
             // SAVE TRUCK-BOOKING
             bookingsService.save(truck_booking).then(function (new_truck_booking) {
@@ -139,7 +152,7 @@
                             standby_id: sb_response.id,
                             booking_truck_id: new_truck_booking.id,
                             agreement_form_line_id:  vm.agreement_form_line_id,
-                            producer_no: l.producer_no,
+                            producerNo: l.producerNo,
                             quantity: l.load_size,
                             merit_point: vm.merit_point,
                             origin: vm.origin,
@@ -151,7 +164,7 @@
                     });
 
                     $timeout(function () {
-                       vm.onSaveStandByEnd();
+                       //vm.onSaveStandByEnd();
                     }, 2000)
                 });
             });

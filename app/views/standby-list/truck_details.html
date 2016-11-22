@@ -12,15 +12,15 @@
             <div>
                 <div class="list-header">
                     <div class="col-xs-4">Load Size</div>
-                    <div class="col-xs-4">Producer Name</div>
                     <div class="col-xs-4">Producer No</div>
+                    <div class="col-xs-4">Producer Name</div>
                 </div>
                 <ul class="noselect">
                     <li ng-repeat="p in vm.current_truck.loads" class="pointer"
                         ng-click="vm.selectTruckLoad(p, $index)">
                         <div class="col-xs-4" ng-class="{'success' : p.isSelected}">{{p.load_size}}</div>
-                        <div class="col-xs-4" ng-class="{'success' : p.isSelected}">{{p.producer_no}}</div>
-                        <div class="col-xs-4" ng-class="{'success' : p.isSelected}">{{p.legal_name}}</div>
+                        <div class="col-xs-4" ng-class="{'success' : p.isSelected}">{{p.producerNo}}</div>
+                        <div class="col-xs-4" ng-class="{'success' : p.isSelected}">{{p.legalName}}</div>
                     </li>
                 </ul>
             </div>

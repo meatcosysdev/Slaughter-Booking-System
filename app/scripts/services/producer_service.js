@@ -4,24 +4,43 @@
     angular.module('BookingsApp')
         .service('producerService', producerService);
 
-    producerService.$inject = ['$http', '$q'];
+    producerService.$inject = ['$http', '$q', 'CONFIG'];
 
     // Declarations
-    function producerService($http, $q) {
+    function producerService($http, $q, CONFIG) {
         return {
-            get_all: get_all,
-            get_by_id: get_producer,
-            contact_producer: contact_producer,
-            get_by_producer_no: get_by_producer_no
+            get_all_producers: get_all_producers,
+            get_producer_for_load:get_producer_for_load,
+            //get_by_id: get_producer,
+            //contact_producer: contact_producer,
+            //get_by_producer_no: get_by_producer_no,
         };
 
-        function get_all(filters) {
+        function get_all_producers() {
             var defer = $q.defer();
 
             $http({
-                url: '/api/producers/',
-                method: "POST",
-                data: { filters: filters}
+                url: CONFIG.api_url + '/producers?page=1&size=100',
+                method: "GET",
+            }).then(function (response) {
+                    defer.resolve(response.data);
+                },
+                function (response) {
+                    defer.reject(response);
+                    if (response.data) {
+                        toastr.error(response.data.error, "Oops! Something went wrong!");
+                    }
+                });
+
+            return defer.promise;
+        }
+
+        function get_producer_for_load(url) {
+            var defer = $q.defer();
+
+            $http({
+                url: url,
+                method: "GET"
             }).then(function (response) {
                     defer.resolve(response.data);
                 },
@@ -76,11 +95,11 @@
             return defer.promise;
         }
 
-        function get_by_producer_no(producer_no) {
+        function get_by_producer_no(producerNo) {
             var defer = $q.defer();
 
             $http({
-                url: '/api/producers/number/' + producer_no,
+                url: '/api/producers/number/' + producerNo,
                 method: "GET"
             }).then(function (response) {
                     defer.resolve(response.data);
@@ -94,6 +113,5 @@
 
             return defer.promise;
         }
-
     }
 })();

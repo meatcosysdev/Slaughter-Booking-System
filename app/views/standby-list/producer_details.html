@@ -6,25 +6,25 @@
             <h4>Producer</h4>
         </li>
         <li>
-            <label>Producer Number:</label>&nbsp;{{vm.current_producer.producer_no}}
+            <label>Producer Number:</label>&nbsp;{{vm.current_producer.producerNo}}
         </li>
         <li>
-            <label>Name:</label>&nbsp;{{vm.current_producer.legal_name}}
+            <label>Name:</label>&nbsp;{{vm.current_producer.legalName}}
         </li>
         <li>
-            <label>Phone number:</label>&nbsp;{{vm.current_producer.telephone_no}}
+            <label>Phone number:</label>&nbsp;{{vm.current_producer.telephoneNo}}
         </li>
         <li>
-            <label>Mobile number:</label>&nbsp;{{vm.current_producer.sms_no}}
+            <label>Mobile number:</label>&nbsp;{{vm.current_producer.smsNo}}
         </li>
         <li>
-            <label>Email:</label>&nbsp;{{vm.current_producer.email_address}}
+            <label>Email:</label>&nbsp;{{vm.current_producer.emailAddress}}
         </li>
 
         <li>
             <label>Load size:&nbsp;</label><input placeholder="Load size"
                               class="user-inputs"
-                              ng-disabled="!vm.current_producer.producer_no"
+                              ng-disabled="!vm.current_producer.producerNo"
                               ng-model="vm.current_producer.load_size"/>
         </li>
     </ul>

@@ -9,7 +9,7 @@
     // Declarations
     function bookingsService($http, $q, CONFIG) {
         return {
-            get_all: get_all,
+            get_all_bookings: get_all_bookings,
             save: save,
             get_booking_standing_by: get_booking_standing_by,
             save_stand_by: save_stand_by,
@@ -22,7 +22,7 @@
             var defer = $q.defer();
 
             $http({
-                url:  + CONFIG.api_url + '/bookings',
+                url: CONFIG.api_url + '/bookingTrucks' ,
                 method: "POST",
                 data: booking
             }).then(function (response) {
@@ -40,13 +40,12 @@
             return defer.promise;
         }
 
-        function get_all(filters) {
+        function get_all_bookings() {
             var defer = $q.defer();
 
             $http({
-                url: CONFIG.api_url + '/bookingTrucks',
-                data: { filters: filters },
-                method: "POST"
+                url: CONFIG.api_url + '/bookingTrucks?page=1&size=1000',
+                method: "GET"
             }).then(function (response) {
                     defer.resolve(response.data);
                 },
@@ -83,7 +82,7 @@
             var defer = $q.defer();
 
             $http({
-                url: '/api/booking_standby_trucks/',
+                url: CONFIG.api_url + '/bookingTrucks',
                 method: "POST",
                 data: sb
             }).then(function (response) {

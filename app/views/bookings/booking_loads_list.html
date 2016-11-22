@@ -9,15 +9,17 @@
                     <th>Load ID</th>
                     <th>Load Size</th>
                     <th>Producer Number</th>
+                    <th>Status</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr ng-repeat="load in vm.truck_loads" class="pointer" ng-click="vm.selectLoad(load)"
-                    ng-class="{'success' : load.isSelected, 'cancelled-load': load.current_status == 'cancelled'}"
+                    ng-class="{'success' : load.isSelected, 'cancelled-load': load.currentStatus == 'Cancelled'}"
                         title="{{load.current_status}}">
                     <td class="text-left">{{load.id}}</td>
                     <td class="text-left">{{load.quantity}}</td>
-                    <td class="text-left">{{load.producer_no}}</td>
+                    <td class="text-left">{{load.producerNo}}</td>
+                    <td class="text-left">{{load.currentStatus}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -25,7 +27,7 @@
 
         <div class="col-xs-6 col-xs-offset-3 margin-top10">
             <button class="btn-wide pointer btn-default"
-                    ng-disabled="!vm.current_load || vm.current_booking.current_status == 'stand-by' || vm.current_load.current_status == 'cancelled'"
+                    ng-disabled="!vm.current_load || vm.current_booking.currentStatus == 'stand-by' || vm.current_load.currentStatus == 'cancelled'"
                     ng-click="vm.showAlterLoadPopup=true">
                 <div class="btn-content">
                     <div class="display_table">

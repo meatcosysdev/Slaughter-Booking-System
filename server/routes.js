@@ -7,21 +7,53 @@ var request = require('request');
 // MODELS
 var CONFIG = require('./models/config').CONFIG;
 
+function serialize(obj) {
+    var str = [];
+    for(var p in obj)
+        if (obj.hasOwnProperty(p)) {
+            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+        }
+    return str.join("&");
+}
+
 // -------------------------------------------- BOOKINGS --------------------------------------------
 router.get('/*', function (req, res, next) {
-    request(CONFIG.api_url + req.path , function (error, response, body) {
+    request(CONFIG.api_url + req.path + '?' + serialize(req.query), function (error, response, body) {
         return res.status(200).send(body);
     })
 });
-
 
 router.post('/*', function (req, res, next) {
-    request(CONFIG.api_url + req.path , function (error, response, body) {
+    console.log(req['path']);
+    console.log(req['body']);
+
+
+    request.post({
+        headers: {'content-type': 'application/json'},
+        url: CONFIG.api_url + req['path'],
+        body: JSON.stringify(req['body'])
+    }, function (error, response, body) {
+        console.log(body);
         return res.status(200).send(body);
-    })
+    });
 });
 
-router.post(CONFIG.serverUrl + '/api/bookings-list', function (req, res, next) {
+router.put('/*', function (req, res, next) {
+    console.log(req['path']);
+    console.log(req['body']);
+
+
+    request.post({
+        headers: {'content-type': 'application/json'},
+        url: CONFIG.api_url + req['path'],
+        body: JSON.stringify(req['body'])
+    }, function (error, response, body) {
+        console.log(body);
+        return res.status(200).send(body);
+    });
+});
+
+/*router.post(CONFIG.serverUrl + '/api/bookings-list', function (req, res, next) {
     var results = [];
     var data = req.body;
 
@@ -81,11 +113,11 @@ router.post(CONFIG.serverUrl + '/api/bookings-list', function (req, res, next) {
         var query = client.query("SELECT COUNT(booking_trucks.*) AS LOADS_NUMBER, booking_trucks.*" +
             " FROM booking_trucks JOIN " +
             "(" +
-                " SELECT booking_loads.*, producers.producer_no " +
-                " FROM booking_loads " +
-                " JOIN producers ON booking_loads.producer_no = producers.producer_no " +
-                 ( prod_where_clause.length ? ' WHERE ' + prod_where_clause.join(' AND ') : '' ) +
-                "GROUP BY booking_loads.id, producers.producer_no" +
+            " SELECT booking_loads.*, producers.producer_no " +
+            " FROM booking_loads " +
+            " JOIN producers ON booking_loads.producer_no = producers.producer_no " +
+            ( prod_where_clause.length ? ' WHERE ' + prod_where_clause.join(' AND ') : '' ) +
+            "GROUP BY booking_loads.id, producers.producer_no" +
             ") t " +
             " ON booking_trucks.id = t.booking_truck_id" +
             ( where_clause.length ? ' WHERE ' + where_clause.join(' AND ') : '' ) +
@@ -542,7 +574,7 @@ router.get(CONFIG.serverUrl + '/api/supply_streams', function (req, res, next) {
         });
 
     });
-});
+});*/
 
 module.exports = router;
 

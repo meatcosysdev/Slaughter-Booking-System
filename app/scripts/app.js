@@ -13,6 +13,7 @@
         .constant('CONFIG', {
             app_version: '1.2.0',
             api_url: '',
+            standby_status: 'StandBy'
         })
         .config(configFunction)
         .run(runOptions);
@@ -22,8 +23,8 @@
     runOptions.$inject = ['$rootScope', '$templateCache'];
 
     function configFunction($stateProvider, $urlRouterProvider, $httpProvider) {
-        $httpProvider.defaults.useXDomain = true;
-        delete $httpProvider.defaults.headers.common['X-Requested-With'];
+        //$httpProvider.defaults.useXDomain = true;
+        //delete $httpProvider.defaults.headers.common['X-Requested-With'];
 
         $urlRouterProvider.otherwise('/home');
 
