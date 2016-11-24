@@ -17,13 +17,13 @@
         </div>
 
         <!--List-->
-        <div class="col-xs-12 margin-top20">
+        <div class="col-xs-12 margin-top20 zebra">
             <div>
                 <div class="list-header">
                     <div class="col-xs-6">Producer Number</div>
                     <div class="col-xs-6">Producer Name</div>
                 </div>
-                <ul class="noselect">
+                <ul class="noselect standby-producer-list ">
                     <li ng-repeat="p in vm.producers | orderBy: 'id'" class="pointer"
                         ng-click="vm.selectProducer(p)">
                         <div class="col-xs-6" ng-class="{'success' : p.isSelected}">{{p.producerNo}}</div>

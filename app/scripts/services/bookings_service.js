@@ -18,7 +18,7 @@
             get_supply_streams: get_supply_streams
         };
 
-        function save(booking) {
+        function save(booking, hide_notifications) {
             var defer = $q.defer();
 
             $http({
@@ -27,7 +27,7 @@
                 data: booking
             }).then(function (response) {
                     defer.resolve(response.data);
-                    toastr.success("Truck booking was successfully updated!");
+                    if (!hide_notifications) toastr.success("Truck booking was successfully updated!");
 
                 },
                 function (response) {

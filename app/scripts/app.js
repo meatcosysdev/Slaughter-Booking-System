@@ -12,7 +12,7 @@
         ])
         .constant('CONFIG', {
             app_version: '1.2.0',
-            api_url: '',
+            api_url: 'http://localhost:8080',
             standby_status: 'StandBy'
         })
         .config(configFunction)

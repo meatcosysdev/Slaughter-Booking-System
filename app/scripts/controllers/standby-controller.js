@@ -36,7 +36,6 @@
         // PRODUCER
         function getProducersList() {
             producerService.get_all_producers(vm.search).then(function (response) {
-                console.log(response['_embedded'])
                 vm.producers = (response['_embedded']['producers'] || []).map(function(p) {
                     p.id = p['_links']['producer']['href'].split('/').pop();
 
@@ -106,10 +105,10 @@
         }
 
         function saveStandBy() {
-            vm.merit_point = 10;
+            vm.merit_point = 100;
             vm.agreement_form_line_id = 1;
-            vm.supply_stream_id = 1;
-            vm.origin = 'test';
+            vm.supply_stream_id = 2;
+            vm.origin = 'standby';
 
             var truck_booking = {
                 preferredDateFrom: moment(vm.current_truck.preferred_date_from).format('YYYY-MM-DD'),
@@ -117,8 +116,8 @@
                 runDate: moment(vm.current_truck.preferred_date_from).format('YYYY-MM-DD'),
                 bookingDate: moment().format('YYYY-MM-DD'),
                 deliveryDate: moment().format('YYYY-MM-DD'),
-                agreementTypeId: 1,
-                supplyStreamId: 3,
+                agreementTypeId: 2,
+                supplyStreamId: vm.supply_stream_id ,
                 facilityId: 1,
                 contactStatus: 'Please Notify',
                 meritPoint: vm.merit_point,
@@ -132,7 +131,13 @@
 
 
             // SAVE TRUCK-BOOKING
-            bookingsService.save(truck_booking).then(function (new_truck_booking) {
+            bookingsService.save(truck_booking).then(function (response) {
+                if (!response['location']) return;
+
+                var new_truck_booking = {
+                    id: response['location'].split('/').pop()
+                };
+
                 var sb = {
                     preferred_date_from: moment(vm.current_truck.preferred_date_from).format('YYYY-MM-DD'),
                     preferred_date_until: moment(vm.current_truck.preferred_date_until).format('YYYY-MM-DD'),
@@ -145,28 +150,31 @@
                 };
 
                 // SAVE STANDBY
-                bookingsService.save_stand_by(sb).then(function (sb_response) {
+                //bookingsService.save_stand_by(sb).then(function (sb_response) {
                     vm.current_truck.loads.forEach(function (l) {
-
                         var load = {
-                            standby_id: sb_response.id,
-                            booking_truck_id: new_truck_booking.id,
-                            agreement_form_line_id:  vm.agreement_form_line_id,
+                            standbyId: 1, //sb_response.id,
+                            bookingTruckId: new_truck_booking.id,
+                            agreementFormLineId:  vm.agreement_form_line_id,
                             producerNo: l.producerNo,
                             quantity: l.load_size,
-                            merit_point: vm.merit_point,
+                            meritPoint: vm.merit_point,
                             origin: vm.origin,
-                            current_status: 'created',
+                            currentStatus: vm.standByStatusText,
+                            createdAt: moment().utc(),
+                            createdBy: 'admin',
+                            updatedAt: moment().utc(),
+                            updatedBy: 'admin'
                         };
 
                         // SAVE TRUCK BOOKING LOAD
-                        bookingsLoadsService.save(load);
+                        bookingsLoadsService.save(load, true);
                     });
 
                     $timeout(function () {
-                       //vm.onSaveStandByEnd();
+                       vm.onSaveStandByEnd();
                     }, 2000)
-                });
+                //});
             });
         }
 

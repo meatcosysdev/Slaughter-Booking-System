@@ -2,42 +2,41 @@
     <div class="box">
         <div class="legend-title">Producer List</div>
         <div class="row">
-            <div class="col-sm-5">
-                <div class="col-xs-12 filters-container">
-
-                    <div class="row margin-bottom10">
-                        <div class="col-xs-4 padding-right0">
-                            <input type="number" ng-model="vm.producer_number" placeholder="Producer number"/>
+            <div class="col-md-6">
+                <div class="filters-container">
+                    <div class="margin-bottom10">
+                        <div class="col-sm-4 padding-right0">
+                            <input type="number" ng-model="vm.producer_number" placeholder="Producer number"
+                            />
                         </div>
-                        <div class="col-xs-4 padding-right0">
+                        <div class="col-sm-4 padding-right0">
                             <input type="number" ng-model="vm.load_number" placeholder="Load number"/>
                         </div>
 
-                        <div class="col-xs-4 padding-right0">
+                        <div class="col-sm-4 padding-right0">
                             <select ng-model="vm.selected_facility" ng-options="f.id as f.name for f in vm.facilities">
                             </select>
                         </div>
                     </div>
 
-                    <div class="row margin-bottom10">
-                        <div class="col-xs-4 padding-right0">
+                    <div class="margin-bottom10">
+                        <div class="col-sm-4 padding-right0">
                             <input type="text" ng-model="vm.producer_name" placeholder="Producer name"/>
                         </div>
 
-                        <div class="col-xs-4 padding-right0">
+                        <div class="col-sm-4 padding-right0">
                             <input type="date" ng-model="vm.booked_date" placeholder="Booked date"/>
                         </div>
 
-                        <div class="col-xs-4 padding-right0">
+                        <div class="col-sm-4 padding-right0">
                             <select ng-model="vm.selected_stream" ng-options="f.id as f.name for f in vm.streams">
                             </select>
                         </div>
                     </div>
 
-                    <div class="row margin-bottom10">
-                        <div class="col-xs-offset-8 col-xs-4 padding-right0">
-                            <select ng-model="vm.office">
-                                <option value="{{f.name}}" ng-repeat="f in vm.offices">{{f.name}}</option>
+                    <div class="margin-bottom10">
+                        <div class="col-sm-offset-8 col-sm-4 padding-right0">
+                            <select ng-model="vm.selected_office" ng-options="f.id as f.name for f in vm.offices">
                             </select>
                         </div>
                     </div>
@@ -46,9 +45,8 @@
                         <span class="glyphicon glyphicon-search"></span>
                     </div>
                 </div>
-
             </div>
-            <div class="col-sm-7">
+            <div class="col-md-6">
                 <div class="short-table-results">
                     <table class="table table-striped">
                         <thead>

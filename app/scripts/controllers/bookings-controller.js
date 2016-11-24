@@ -243,8 +243,8 @@
 
         function showImprovePanel() {
             vm.to_improve_booking = angular.copy(vm.current_booking);
-            vm.to_improve_booking.preferred_date_from = moment(vm.to_improve_booking.preferred_date_from).toDate();
-            vm.to_improve_booking.preferred_date_until = moment(vm.to_improve_booking.preferred_date_until).toDate();
+            vm.to_improve_booking.preferred_date_from = moment().add('days', 8).toDate();
+            vm.to_improve_booking.preferred_date_until = moment().add('days', 8).toDate();
 
             vm.showImprovePopup = true;
             vm.validateDate();
@@ -343,8 +343,6 @@
         // Producer
         function contactProducer(status) {
             var contact_data = angular.copy(vm.current_booking);
-            console.log(status)
-
             contact_data.contactStatus = vm.current_producer.contactStatus = status;
 
             contact_data.runDate = moment(contact_data.runDate).format('YYYY-MM-DD');

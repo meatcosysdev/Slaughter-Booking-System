@@ -14,7 +14,7 @@
             get_truck_loads: get_truck_loads,
         };
 
-        function save(load) {
+        function save(load, hide_notifications) {
             var defer = $q.defer();
 
             $http({
@@ -23,7 +23,7 @@
                 data: load
             }).then(function (response) {
                     defer.resolve(response.data);
-                    toastr.success("Truck load was successfully updated!");
+                    if (!hide_notifications) toastr.success("Truck load was successfully updated!");
 
                 },
                 function (response) {
@@ -41,7 +41,7 @@
 
             $http({
                 url: url,
-                get: "POST",
+                get: "GET",
             }).then(function (response) {
                     defer.resolve(response.data);
                 },

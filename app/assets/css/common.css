@@ -14,18 +14,6 @@ div[class^="col-xs"] {
     padding: 0 5px !important;
 }
 
-
-.page-container {
-    margin: 25px 15px;
-    min-width: 650px;
-}
-
-@media print {
-    .container {
-        width: 95% !important;
-    }
-}
-
 .header,
 .footer {
     padding-left: 15px;
@@ -39,12 +27,14 @@ label {
 }
 
 /* GENERAL */
-.padding-left0 {
-    padding-left: 0 !important;
-}
+@media screen and (min-width: 990px) {
+    .padding-left0 {
+        padding-left: 0 !important;
+    }
 
-.padding-right0 {
-    padding-right: 0 !important;
+    .padding-right0 {
+        padding-right: 0 !important;
+    }
 }
 
 .no-padding {

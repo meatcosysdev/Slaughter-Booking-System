@@ -9,14 +9,13 @@ var CONFIG = require('./models/config').CONFIG;
 
 function serialize(obj) {
     var str = [];
-    for(var p in obj)
+    for (var p in obj)
         if (obj.hasOwnProperty(p)) {
             str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
         }
     return str.join("&");
 }
 
-// -------------------------------------------- BOOKINGS --------------------------------------------
 router.get('/*', function (req, res, next) {
     request(CONFIG.api_url + req.path + '?' + serialize(req.query), function (error, response, body) {
         return res.status(200).send(body);
@@ -25,16 +24,13 @@ router.get('/*', function (req, res, next) {
 
 router.post('/*', function (req, res, next) {
     console.log(req['path']);
-    console.log(req['body']);
-
 
     request.post({
         headers: {'content-type': 'application/json'},
         url: CONFIG.api_url + req['path'],
         body: JSON.stringify(req['body'])
     }, function (error, response, body) {
-        console.log(body);
-        return res.status(200).send(body);
+        return res.status(200).send(response['headers']);
     });
 });
 
@@ -42,7 +38,6 @@ router.put('/*', function (req, res, next) {
     console.log(req['path']);
     console.log(req['body']);
 
-
     request.post({
         headers: {'content-type': 'application/json'},
         url: CONFIG.api_url + req['path'],
@@ -53,92 +48,73 @@ router.put('/*', function (req, res, next) {
     });
 });
 
-/*router.post(CONFIG.serverUrl + '/api/bookings-list', function (req, res, next) {
-    var results = [];
-    var data = req.body;
+module.exports = router;
 
-    pg.connect(CONFIG.connectionString, function (err, client, done) {
-        // Handle connection errors
-        if (err) {
-            done();
-            console.log(err);
-            return res.status(500).json({success: false, data: err});
+/*// -------------------------------------------- BOOKINGS --------------------------------------------
+router.get('/bookingTrucks', function (req, res, next) {
+    var t = {
+        "_embedded": {
+            "bookingTrucks": [{
+                "preferredDateFrom": "2016-12-04",
+                "preferredDateUntil": "2016-12-04",
+                "runDate": "2016-06-23",
+                "truckSize": 40,
+                "meritPoint": 63.00,
+                "deliveryDate": "2016-07-03",
+                "bookingDate": "2016-07-04",
+                "contactStatus": "Please Notify       ",
+                "currentStatus": "Booked           ",
+                "createdAt": "2016-06-21T07:22:49.000+0000",
+                "createdBy": "Informix            ",
+                "updatedAt": "2016-06-23T09:49:29.000+0000",
+                "updatedBy": "informix            ",
+                "_links": {
+                    "self": {
+                        "href": "http://localhost:8080/bookingTrucks/15180"
+                    },
+                    "bookingTruck": {
+                        "href": "http://localhost:8080/bookingTrucks/15180"
+                    },
+                    "facility": {
+                        "href": "http://localhost:8080/bookingTrucks/15180/facility"
+                    },
+                    "bookingLoads": {
+                        "href": "http://localhost:8080/bookingTrucks/15180/bookingLoads"
+                    },
+                    "supplyStream": {
+                        "href": "http://localhost:8080/bookingTrucks/15180/supplyStream"
+                    }
+                }
+            }]
+        },
+        "_links": {
+            "first": {
+                "href": "http://localhost:8080/bookingTrucks?page=0&size=1"
+            },
+            "self": {
+                "href": "http://localhost:8080/bookingTrucks"
+            },
+            "next": {
+                "href": "http://localhost:8080/bookingTrucks?page=1&size=1"
+            },
+            "last": {
+                "href": "http://localhost:8080/bookingTrucks?page=2569&size=1"
+            },
+            "profile": {
+                "href": "http://localhost:8080/profile/bookingTrucks"
+            }
+        },
+        "page": {
+            "size": 1,
+            "totalElements": 2570,
+            "totalPages": 2570,
+            "number": 0
         }
-
-
-        var filters = data['filters'];
-        var prod_where_clause = [];
-        var where_clause = [];
-        var values = [];
-
-        if (filters && Object.keys(filters).length > 0) {
-            var i = 1;
-            if (filters.producer_number) {
-                prod_where_clause.push('producers.producer_no = ($' + i + ')');
-                i++;
-                values.push(filters.producer_number);
-            }
-
-            if (filters.producer_name) {
-                prod_where_clause.push('LOWER(producers.legal_name) = LOWER(($' + i + '))');
-                i++;
-                values.push(filters.producer_name);
-            }
-
-            if (filters.load_number) {
-                prod_where_clause.push('booking_loads.id = ($' + i + ')');
-                i++;
-                values.push(filters.load_number);
-            }
-
-            if (filters.booked_date) {
-                where_clause.push('booking_trucks.booking_date = ($' + i + ')');
-                i++;
-                values.push(filters.booked_date);
-            }
-
-            if (filters.selected_facility) {
-                where_clause.push('booking_trucks.facility_id = ($' + i + ')');
-                i++;
-                values.push(filters.selected_facility);
-            }
-
-            if (filters.selected_stream) {
-                where_clause.push('booking_trucks.supply_stream_id = ($' + i + ')');
-                i++;
-                values.push(filters.selected_stream);
-            }
-        }
-
-        var query = client.query("SELECT COUNT(booking_trucks.*) AS LOADS_NUMBER, booking_trucks.*" +
-            " FROM booking_trucks JOIN " +
-            "(" +
-            " SELECT booking_loads.*, producers.producer_no " +
-            " FROM booking_loads " +
-            " JOIN producers ON booking_loads.producer_no = producers.producer_no " +
-            ( prod_where_clause.length ? ' WHERE ' + prod_where_clause.join(' AND ') : '' ) +
-            "GROUP BY booking_loads.id, producers.producer_no" +
-            ") t " +
-            " ON booking_trucks.id = t.booking_truck_id" +
-            ( where_clause.length ? ' WHERE ' + where_clause.join(' AND ') : '' ) +
-            " GROUP BY booking_trucks.id", values);
-
-        console.log(query)
-
-        query.on('row', function (row) {
-            results.push(row);
-        });
-
-        // After all data is returned, close connection and return results
-        query.on('end', function () {
-            done();
-            return res.json(results);
-        });
-
-    });
+    }
+    return res.json(t);
 });
 
-router.post(CONFIG.serverUrl + '/api/bookings/', function (req, res) {
+router.post('/api/bookingTrucks/', function (req, res) {
     var data = req.body;
 
     // Get a Postgres client from the connection pool
@@ -196,31 +172,68 @@ router.post(CONFIG.serverUrl + '/api/bookings/', function (req, res) {
 });
 
 // -------------------------------------------- STANDBY - BOOKINGS --------------------------------------------
-router.get(CONFIG.serverUrl + '/api/booking_standby_trucks', function (req, res, next) {
-    var results = [];
-
-    pg.connect(CONFIG.connectionString, function (err, client, done) {
-        // Handle connection errors
-        if (err) {
-            done();
-            console.log(err);
-            return res.status(500).json({success: false, data: err});
+router.get('/standByTrucks', function (req, res, next) {
+    var t = {
+        "_embedded": {
+            "bookingTrucks": [{
+                "preferredDateFrom": "2016-12-04",
+                "preferredDateUntil": "2016-12-04",
+                "runDate": "2016-06-23",
+                "truckSize": 40,
+                "meritPoint": 63.00,
+                "deliveryDate": "2016-07-03",
+                "bookingDate": "2016-07-04",
+                "contactStatus": "Please Notify       ",
+                "currentStatus": "Booked           ",
+                "createdAt": "2016-06-21T07:22:49.000+0000",
+                "createdBy": "Informix            ",
+                "updatedAt": "2016-06-23T09:49:29.000+0000",
+                "updatedBy": "informix            ",
+                "_links": {
+                    "self": {
+                        "href": "http://localhost:8080/bookingTrucks/15180"
+                    },
+                    "bookingTruck": {
+                        "href": "http://localhost:8080/bookingTrucks/15180"
+                    },
+                    "facility": {
+                        "href": "http://localhost:8080/bookingTrucks/15180/facility"
+                    },
+                    "bookingLoads": {
+                        "href": "http://localhost:8080/bookingTrucks/15180/bookingLoads"
+                    },
+                    "supplyStream": {
+                        "href": "http://localhost:8080/bookingTrucks/15180/supplyStream"
+                    }
+                }
+            }]
+        },
+        "_links": {
+            "first": {
+                "href": "http://localhost:8080/bookingTrucks?page=0&size=1"
+            },
+            "self": {
+                "href": "http://localhost:8080/bookingTrucks"
+            },
+            "next": {
+                "href": "http://localhost:8080/bookingTrucks?page=1&size=1"
+            },
+            "last": {
+                "href": "http://localhost:8080/bookingTrucks?page=2569&size=1"
+            },
+            "profile": {
+                "href": "http://localhost:8080/profile/bookingTrucks"
+            }
+        },
+        "page": {
+            "size": 1,
+            "totalElements": 2570,
+            "totalPages": 2570,
+            "number": 0
         }
+    }
+    return res.json(t);
 
-        var query = client.query("SELECT booking_standby_trucks ORDER BY id ASC");
-
-        query.on('row', function (row) {
-            //storage.add();
-            results.push(row);
-        });
-
-        // After all data is returned, close connection and return results
-        query.on('end', function () {
-            done();
-            return res.json(results);
-        });
-
-    });
 });
 
 router.get(CONFIG.serverUrl + '/api/booking_standby_trucks/:id', function (req, res, next) {
@@ -313,44 +326,45 @@ router.delete(CONFIG.serverUrl + '/api/booking_standby_trucks/:id', function (re
 });
 
 // -------------------------------------------- BOOKING_LOADS --------------------------------------------
-router.post(CONFIG.serverUrl + '/api/booking-loads-list', function (req, res, next) {
-    var results = [];
-
-    pg.connect(CONFIG.connectionString, function (err, client, done) {
-        // Handle connection errors
-        if (err) {
-            done();
-            console.log(err);
-            return res.status(500).json({success: false, data: err});
-        }
-
-        var filters = req.body['filters'];
-        var where_clause = [];
-        var values = [];
-        if (filters && Object.keys(filters).length > 0) {
-            var i = 1;
-            if (filters.booking_truck_id) {
-                where_clause.push('booking_truck_id = ($' + i + ')');
-                i++;
-                values.push(filters.booking_truck_id);
+router.get('/bookingTrucks/:truck_id/bookingLoads', function (req, res, next) {
+    var loads = {
+        "_embedded": {
+            "bookingLoads": [{
+                "quantity": 40,
+                "meritPoint": 63.00,
+                "origin": "OKASLA              ",
+                "currentStatus": "Booked           ",
+                "createdAt": "2016-11-08T10:26:32.139+0000",
+                "createdBy": "sscheepers",
+                "updatedAt": "2016-11-08T10:26:32.139+0000",
+                "updatedBy": "sscheepers",
+                "_links": {
+                    "self": {
+                        "href": "http://localhost:8080/bookingLoads/15704"
+                    },
+                    "bookingLoad": {
+                        "href": "http://localhost:8080/bookingLoads/15704"
+                    },
+                    "producerAgreementLine": {
+                        "href": "http://localhost:8080/bookingLoads/15704/producerAgreementLine"
+                    },
+                    "producer": {
+                        "href": "http://localhost:8080/bookingLoads/15704/producer"
+                    },
+                    "bookingTruck": {
+                        "href": "http://localhost:8080/bookingLoads/15704/bookingTruck"
+                    }
+                }
+            }]
+        },
+        "_links": {
+            "self": {
+                "href": "http://localhost:8080/bookingTrucks/15180/bookingLoads"
             }
         }
+    }
 
-        var query = client.query("SELECT * FROM booking_loads"
-            + ( where_clause.length ? ' WHERE ' + where_clause.join(' AND ') : '' ), values);
-
-
-        query.on('row', function (row) {
-            results.push(row);
-        });
-
-        // After all data is returned, close connection and return results
-        query.on('end', function () {
-            done();
-            return res.json(results);
-        });
-
-    });
+    return res.json(loads);
 });
 
 router.post(CONFIG.serverUrl + '/api/bookings_loads/', function (req, res) {
@@ -400,130 +414,46 @@ router.post(CONFIG.serverUrl + '/api/bookings_loads/', function (req, res) {
 });
 
 // -------------------------------------------- PRODUCERS --------------------------------------------
-router.post(CONFIG.serverUrl + '/api/producers', function (req, res, next) {
-    var results = [];
-
-    pg.connect(CONFIG.connectionString, function (err, client, done) {
-        // Handle connection errors
-        if (err) {
-            done();
-            console.log(err);
-            return res.status(500).json({success: false, data: err});
-        }
-
-
-        var data = req.body;
-        var filters = data['filters'];
-        var where_clause = [];
-        var values = [];
-
-        if (filters && Object.keys(filters).length > 0) {
-            var i = 1;
-            if (filters.producer_no) {
-                where_clause.push('producer_no = ($' + i + ')');
-                i++;
-                values.push(filters.producer_no);
+router.get('/bookingLoads/:load_id/producer', function (req, res, next) {
+    var producer = {
+        "producerNo" : "64014",
+        "alphaCode" : "FC2",
+        "legalName" : "MEATCO FEEDLOT",
+        "idNo" : "64014 COMPANY",
+        "vatName" : "MEATCO FEEDLOT",
+        "vatRegistrationNo" : null,
+        "contactPerson" : "MEATCO FEEDLOT",
+        "physicalAddress" : null,
+        "postalAddress1" : "P.O. BOX 3881",
+        "postalAddress2" : "WINDHOEK",
+        "postalCode" : " ",
+        "smsNo" : "0814166351",
+        "telephoneNo" : "061257203",
+        "faxNo" : " 061257848",
+        "emailAddress" : "fbooysen@meatco.com.na",
+        "currentStatus" : "Active",
+        "createdAt" : "2015-09-14T06:24:47.147+0000",
+        "createdBy" : "sscheepers",
+        "updatedAt" : "2016-08-04T14:22:41.162+0000",
+        "updatedBy" : "euanivi",
+        "_links" : {
+            "self" : {
+                "href" : "http://localhost:8080/producers/8847"
+            },
+            "producer" : {
+                "href" : "http://localhost:8080/producers/8847"
+            },
+            "bookingLoads" : {
+                "href" : "http://localhost:8080/producers/8847/bookingLoads"
             }
-
-            if (filters.legal_name) {
-                where_clause.push('LOWER(legal_name) = LOWER(($' + i + '))');
-                i++;
-                values.push(filters.legal_name);
-            }
         }
-
-        var query = client.query("SELECT * FROM producers"
-            + ( where_clause.length ? ' WHERE ' + where_clause.join(' AND ') : '')
-            + " LIMIT 100", values);
-
-        query.on('row', function (row) {
-            results.push(row);
-        });
-
-        // After all data is returned, close connection and return results
-        query.on('end', function () {
-            done();
-            return res.json(results);
-        });
-
-    });
-});
-
-router.get(CONFIG.serverUrl + '/api/producers/:id', function (req, res, next) {
-    var results = {};
-    var id = req.params.id;
-
-    pg.connect(CONFIG.connectionString, function (err, client, done) {
-        // Handle connection errors
-        if (err) {
-            done();
-            console.log(err);
-            return res.status(500).json({success: false, data: err});
-        }
-
-        var query = client.query("SELECT * FROM producers WHERE id=($1) LIMIT 1", [id]);
-        query.on('row', function (row) {
-            results = row;
-        });
-
-        // After all data is returned, close connection and return results
-        query.on('end', function () {
-            done();
-            return res.json(results);
-        });
-    });
-});
-
-router.get(CONFIG.serverUrl + '/api/producers/number/:number', function (req, res, next) {
-    var results = {};
-    var producer_no = req.params.number;
-
-    pg.connect(CONFIG.connectionString, function (err, client, done) {
-        // Handle connection errors
-        if (err) {
-            done();
-            console.log(err);
-            return res.status(500).json({success: false, data: err});
-        }
-
-        var query = client.query("SELECT * FROM producers WHERE producer_no=($1) LIMIT 1", [producer_no]);
-        query.on('row', function (row) {
-            results = row;
-        });
-
-        // After all data is returned, close connection and return results
-        query.on('end', function () {
-            done();
-            return res.json(results);
-        });
-    });
-});
-
-router.post(CONFIG.serverUrl + '/api/producers/', function (req, res) {
-    var data = req.body;
-
-    if (!data.id) {
-        return res.status(500).send(json({success: false, data: "Id is required!"}));
     }
 
-    // Get a Postgres client from the connection pool
-    pg.connect(CONFIG.connectionString, function (err, client, done) {
-        // Handle connection errors
-        if (err) {
-            done();
-            console.log(err);
-            return res.status(500).send(json({success: false, data: err}));
-        }
-
-        console.log(data);
-        return res.status(200).send({success: true});
-
-        // TODO: SAVE TO DB
-    });
-
+    return res.json(producer);
 });
+
 // -------------------------------------------- FACILITIES --------------------------------------------
-router.get(CONFIG.serverUrl + '/api/facilities', function (req, res, next) {
+router.get('/facilities', function (req, res, next) {
     var results = [];
 
     pg.connect(CONFIG.connectionString, function (err, client, done) {
@@ -550,7 +480,7 @@ router.get(CONFIG.serverUrl + '/api/facilities', function (req, res, next) {
 });
 
 // -------------------------------------------- SUPPLY STREAMS --------------------------------------------
-router.get(CONFIG.serverUrl + '/api/supply_streams', function (req, res, next) {
+router.get('/supply_streams', function (req, res, next) {
     var results = [];
 
     pg.connect(CONFIG.connectionString, function (err, client, done) {
@@ -575,7 +505,3 @@ router.get(CONFIG.serverUrl + '/api/supply_streams', function (req, res, next) {
 
     });
 });*/
-
-module.exports = router;
-
-
