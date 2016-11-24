@@ -1,4 +1,4 @@
-var PORT = process.argv[2] && parseInt(process.argv[2], 10) || 4001;
+var PORT = process.argv[2] && parseInt(process.argv[2], 10) || 8080;
 var STATIC_DIR = __dirname + '/../app';
 
 var open = require('open');

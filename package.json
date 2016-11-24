@@ -2,7 +2,9 @@
   "name": "bookings-app",
   "version": "0.0.0",
   "private": true,
-  "scripts": {},
+  "scripts": {
+    "start": "node server/app.js"
+  },
   "dependencies": {
     "body-parser": "~1.10.2",
     "express": "~4.11.1",

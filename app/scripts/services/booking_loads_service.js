@@ -4,25 +4,26 @@
     angular.module('BookingsApp')
         .service('bookingsLoadsService', bookingsLoadsService);
 
-    bookingsLoadsService.$inject = ['$http', '$q'];
+    bookingsLoadsService.$inject = ['$http', '$q' , 'CONFIG'];
 
     // Declarations
-    function bookingsLoadsService($http, $q) {
+    function bookingsLoadsService($http, $q, CONFIG) {
         return {
-            get_all: get_all,
+            //get_all: get_all,
             save: save,
+            get_truck_loads: get_truck_loads,
         };
 
-        function save(load) {
+        function save(load, hide_notifications) {
             var defer = $q.defer();
 
             $http({
-                url: '/api/bookings_loads/',
+                url: CONFIG.api_url + '/bookingLoads',
                 method: "POST",
                 data: load
             }).then(function (response) {
                     defer.resolve(response.data);
-                    toastr.success("Truck load was successfully updated!");
+                    if (!hide_notifications) toastr.success("Truck load was successfully updated!");
 
                 },
                 function (response) {
@@ -35,13 +36,12 @@
             return defer.promise;
         }
 
-        function get_all(filters) {
+        function get_truck_loads(url) {
             var defer = $q.defer();
 
             $http({
-                url: '/api/booking-loads-list',
-                method: "POST",
-                data: {filters: filters}
+                url: url,
+                get: "GET",
             }).then(function (response) {
                     defer.resolve(response.data);
                 },

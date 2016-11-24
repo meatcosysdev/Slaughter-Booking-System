@@ -1,46 +1,47 @@
-<div class="box page-grid-cell">
+<div class="box">
     <div class="legend-title">Truck Details</div>
 
 
-    <div ng-if="vm.current_truck.wasAdded" class="standby-producers-list">
-        <div class="text-center">
-            <h4>This truck has {{vm.current_truck.space_left}} spaces available</h4>
-        </div>
-
-
-        <div class="col-xs-12 margin-top20">
-            <div>
-                <div class="list-header">
-                    <div class="col-xs-4">Load Size</div>
-                    <div class="col-xs-4">Producer Name</div>
-                    <div class="col-xs-4">Producer No</div>
-                </div>
-                <ul class="noselect">
-                    <li ng-repeat="p in vm.current_truck.loads" class="pointer"
-                        ng-click="vm.selectTruckLoad(p, $index)">
-                        <div class="col-xs-4" ng-class="{'success' : p.isSelected}">{{p.load_size}}</div>
-                        <div class="col-xs-4" ng-class="{'success' : p.isSelected}">{{p.producer_no}}</div>
-                        <div class="col-xs-4" ng-class="{'success' : p.isSelected}">{{p.legal_name}}</div>
-                    </li>
-                </ul>
+    <div class="standby-truck-details">
+        <div ng-if="vm.current_truck.wasAdded">
+            <div class="text-center">
+                <h4>This truck has {{vm.current_truck.space_left}} spaces available</h4>
             </div>
-        </div>
+
+            <div class="col-xs-12">
+                <div>
+                    <div class="list-header">
+                        <div class="col-xs-4">Load Size</div>
+                        <div class="col-xs-4">Producer No</div>
+                        <div class="col-xs-4">Producer Name</div>
+                    </div>
+                    <ul class="noselect">
+                        <li ng-repeat="p in vm.current_truck.loads" class="pointer"
+                            ng-click="vm.selectTruckLoad(p, $index)">
+                            <div class="col-xs-4" ng-class="{'success' : p.isSelected}">{{p.load_size}}</div>
+                            <div class="col-xs-4" ng-class="{'success' : p.isSelected}">{{p.producerNo}}</div>
+                            <div class="col-xs-4" ng-class="{'success' : p.isSelected}">{{p.legalName}}</div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
 
 
-        <div class="action-controls-remove">
-            <button class="btn-action"
-                    ng-disabled="!vm.current_load"
-                    ng-click="vm.removeProducerLoadFromTruck()">
-                <div class="button-remove" ng-class="{'not-allowed': !vm.current_load}"></div>
-            </button>
-        </div>
+            <div class="action-controls-remove">
+                <button class="btn-action"
+                        ng-disabled="!vm.current_load"
+                        ng-click="vm.removeProducerLoadFromTruck()">
+                    <div class="button-remove" ng-class="{'not-allowed': !vm.current_load}"></div>
+                </button>
+            </div>
 
-        <div class="action-controls">
-            <button class="btn-action"
-                    ng-disabled="vm.current_truck.loads.length == 0"
-                    ng-click="vm.saveStandBy()">
-                <div class="button-plus" ng-class="{'not-allowed': vm.current_truck.loads.length == 0}"></div>
-            </button>
+            <div class="action-controls">
+                <button class="btn-action"
+                        ng-disabled="vm.current_truck.loads.length == 0"
+                        ng-click="vm.saveStandBy()">
+                    <div class="button-plus" ng-class="{'not-allowed': vm.current_truck.loads.length == 0}"></div>
+                </button>
+            </div>
         </div>
     </div>
 </div>

@@ -2,19 +2,20 @@
     angular.module('BookingsApp')
         .controller('BookingsController', bookingsController);
 
-    bookingsController.$inject = ['$state', 'bookingsService', 'bookingsLoadsService', 'producerService'];
+    bookingsController.$inject = ['$state', 'bookingsService', 'bookingsLoadsService', 'producerService', 'CONFIG'];
 
     // Declarations
-    function bookingsController($state, bookingsService, bookingsLoadsService, producerService) {
+    function bookingsController($state, bookingsService, bookingsLoadsService, producerService, CONFIG) {
         var vm = this;
 
         vm.current_booking = {};
-        vm.current_load = {};
+        vm.current_load = '';
         vm.current_stand_by = {};
         vm.current_producer = {};
         vm.truck_loads = [];
         vm.loads_list = [];
 
+        vm.standByStatusText = CONFIG.standby_status;
         vm.today = new Date();
         vm.add_days = 8;
         vm.day_rule = moment().add(vm.add_days, 'day').toDate();
@@ -38,7 +39,6 @@
         vm.goto = goto;
         vm.selectBookingToImprove = selectBookingToImprove;
         vm.getTruckLoads = getTruckLoads;
-        vm.getProducerDetails = getProducerDetails;
         vm.selectLoad = selectLoad;
         vm.updateTruckBooking = updateTruckBooking;
 
@@ -63,13 +63,13 @@
         // IMPLEMENTATIONS
         function init() {
             vm.loadAllBookings();
-            vm.loadFacilities();
-            vm.loadSupplyStreams();
+           // vm.loadFacilities();
+           // vm.loadSupplyStreams();
         }
 
         function loadSupplyStreams() {
             bookingsService.get_supply_streams().then(function (result) {
-                vm.streams = result || [];
+                vm.streams = result['_embedded']['supplyStreams'] || [];
                 vm.streams.unshift({id: 0, name: '- Stream -'});
                 vm.selected_stream = vm.streams[0].id;
             });
@@ -77,12 +77,11 @@
 
         function loadFacilities() {
             bookingsService.get_facilities().then(function (result) {
-                vm.facilities = result || [];
+                vm.facilities = result['_embedded']['facilities'] || [];
                 vm.facilities.unshift({id: 0, name: '- Facility -'});
                  vm.selected_facility = vm.facilities[0].id;
             });
         }
-
 
         function filterBookings() {
             var filters = {};
@@ -94,26 +93,34 @@
             if (vm.selected_facility) filters.selected_facility = vm.selected_facility;
             if (vm.selected_stream) filters.selected_stream = vm.selected_stream;
 
-            bookingsService.get_all(filters).then(function (result) {
+            bookingsService.get_all_bookings().then(function (result) {
+                vm.truck_bookings = (result['_embedded']['bookingTrucks'] || []).map(function (t) {
+                    t['id'] = t['_links']['bookingTruck']['href'].split('/').pop();
 
-                vm.truck_bookings = result.map(function (t) {
-                    t.allocated_date = moment(t.delivery_date).format('DD/MM/YYYY');
-                    t.preferred_date_from = moment(t.preferred_date_from).toDate();
-                    t.preferred_date_until = moment(t.preferred_date_until).toDate();
+                    t.loads_number = 0; // TODO
+                    t.bookingDate = moment(t.bookingDate).format('DD/MM/YYYY');
+                    t.deliveryDate = moment(t.deliveryDate).format('DD/MM/YYYY');
+                    t.preferred_date_from = moment(t.preferredDateFrom).toDate();
+                    t.preferred_date_until = moment(t.preferredDateUntil).toDate();
+
                     return t;
                 });
+
                 vm.selectBookingToImprove();
             });
         }
 
         function loadAllBookings() {
-            bookingsService.get_all().then(function (result) {
+            bookingsService.get_all_bookings().then(function (result) {
+                vm.truck_bookings = (result['_embedded']['bookingTrucks'] || []).map(function (t) {
+                    t['id'] = t['_links']['bookingTruck']['href'].split('/').pop();
 
+                    t.loads_number = 0; // TODO
+                    t.bookingDate = moment(t.bookingDate).format('DD/MM/YYYY');
+                    t.deliveryDate = moment(t.deliveryDate).format('DD/MM/YYYY');
+                    t.preferred_date_from = moment(t.preferredDateFrom).toDate();
+                    t.preferred_date_until = moment(t.preferredDateUntil).toDate();
 
-                vm.truck_bookings = result.map(function (t) {
-                    t.allocated_date = moment(t.delivery_date).format('DD/MM/YYYY');
-                    t.preferred_date_from = moment(t.preferred_date_from).toDate();
-                    t.preferred_date_until = moment(t.preferred_date_until).toDate();
                     return t;
                 });
 
@@ -122,13 +129,14 @@
         }
 
         function selectBookingToImprove(b) {
-
             if (!b) {
                 delete vm.current_booking;
                 delete vm.truck_loads;
+                vm.truck_bookings.forEach(function (t) {
+                    t.isSelected = false;
+                });
                 return;
             }
-
 
             vm.truck_loads = [];
             b.isSelected = !b.isSelected;
@@ -141,7 +149,7 @@
                 vm.current_booking = b;
 
                 // Get booking_load details
-                vm.getTruckLoads(vm.current_booking.id);
+                vm.getTruckLoads();
 
             } else {
                 delete vm.current_booking;
@@ -151,22 +159,38 @@
             vm.disableImprovement = (vm.current_booking && vm.current_booking.allocated_date == vm.day_rule_str);
         }
 
-        function getTruckLoads(booking_id) {
-            bookingsLoadsService.get_all({booking_truck_id: booking_id}).then(function (result) {
-                vm.truck_loads = result;
+        function getTruckLoads() {
+            var url = vm.current_booking['_links']['bookingLoads']['href'];
+
+            // TODO
+            url = url.replace('http://localhost:8080', '');
+
+            bookingsLoadsService.get_truck_loads(url).then(function (result) {
+                vm.truck_loads = (result['_embedded']['bookingLoads'] || []).map(function(load){
+                    load.id = load['_links']['bookingLoad']['href'].split('/').pop();
+                    load.currentStatus = load.currentStatus.trim();
+                    load.booking_truck_id = vm.current_booking['id'];
+
+                    var url = load['_links']['producer']['href'];
+
+                    // TODO
+                    url = url.replace('http://localhost:8080', '');
+
+                    producerService.get_producer_for_load(url).then(function(producer){
+                        if (producer) {
+                            producer.contactStatus = vm.current_booking.contactStatus;
+                            load.producer = producer;
+                            load.producerNo = producer.producerNo;
+                        }
+                    });
+
+                    return load;
+                });
 
                 // FIND STANDBY BOOKING
-                if (vm.current_booking.current_status == 'stand-by') {
+                if (vm.current_booking.currentStatus == 'StandBy') {
                     vm.disableImprovement = true;
                 }
-            });
-        }
-
-        function getProducerDetails(producer_no) {
-            producerService.get_by_producer_no(producer_no).then(function (result) {
-                vm.current_producer = result;
-                vm.current_producer.merit_point = vm.current_load.merit_point;
-                vm.contactMethod = vm.current_producer.contact_status = vm.current_booking.contact_status;
             });
         }
 
@@ -181,11 +205,15 @@
                 vm.current_load = load;
 
                 // Get producer details
-                vm.getProducerDetails(vm.current_load.producer_no);
+                if (load.producer) {
+                    vm.current_producer = angular.copy(load.producer);
+                    vm.current_producer.merit_point = load.meritPoint;
+                    vm.contactMethod = vm.current_producer.contactStatus;
+                }
 
                 // Load standBy details
-                if (vm.current_booking.current_status == 'stand-by' && vm.current_load.standby_id) {
-                    vm.loadStandByDetails(vm.current_load.standby_id);
+                if (vm.current_booking.currentStatus == vm.standByStatusText && vm.current_load.standby_id) {
+                    vm.loadStandByDetails();
                 }
 
             } else {
@@ -195,8 +223,11 @@
             }
         }
 
-        function loadStandByDetails(standByID) {
-            bookingsService.get_booking_standing_by(standByID).then(function (response) {
+        function loadStandByDetails() {
+            console.log(vm.current_load);
+
+            return;
+            bookingsService.get_booking_standing_by().then(function (response) {
                 vm.current_stand_by = response;
                 vm.current_stand_by.preferred_date_from = moment(vm.current_stand_by.preferred_date_from).toDate();
                 vm.current_stand_by.preferred_date_until = moment(vm.current_stand_by.preferred_date_until).toDate();
@@ -210,45 +241,57 @@
             if (vm.to_improve_booking.preferred_date_until < vm.day_rule) vm.dateErrorMessages.push("End date must be at least " + vm.add_days + " days in the future");
         }
 
-        function updateTruckBooking() {
-            vm.to_improve_booking.current_status = 'TrytoImprove';
-            vm.current_booking = angular.copy(vm.to_improve_booking);
-
-            var booking = {
-                id: vm.current_booking.id,
-                current_status: vm.current_booking.current_status,
-                preferred_date_from: moment(vm.current_booking.preferred_date_from).format('YYYY-MM-DD'),
-                preferred_date_until: moment(vm.current_booking.preferred_date_until).format('YYYY-MM-DD')
-            };
-
-            //
-
-            bookingsService.save(booking).then(function () {
-                vm.showImprovePopup = false;
-                vm.loadAllBookings();
-            });
-        }
-
         function showImprovePanel() {
             vm.to_improve_booking = angular.copy(vm.current_booking);
+            vm.to_improve_booking.preferred_date_from = moment().add('days', 8).toDate();
+            vm.to_improve_booking.preferred_date_until = moment().add('days', 8).toDate();
 
             vm.showImprovePopup = true;
             vm.validateDate();
         }
 
+        function updateTruckBooking() {
+            vm.to_improve_booking.currentStatus = 'TryToImprove';
+            vm.to_improve_booking.contactStatus = 'Please Notify';
+            vm.to_improve_booking.preferredDateFrom =  moment(vm.to_improve_booking.preferred_date_from).format('YYYY-MM-DD');
+            vm.to_improve_booking.preferredDateUntil = moment(vm.to_improve_booking.preferred_date_until).format('YYYY-MM-DD');
+
+            vm.to_improve_booking.runDate = moment(vm.current_booking.preferredDateFrom).format('YYYY-MM-DD');
+            vm.to_improve_booking.deliveryDate = moment(vm.current_booking.deliveryDate).format('YYYY-MM-DD');
+            vm.to_improve_booking.bookingDate = moment(vm.current_booking.bookingDate).format('YYYY-MM-DD');
+
+
+            delete vm.to_improve_booking['_links'];
+            delete vm.to_improve_booking['preferred_date_from'];
+            delete vm.to_improve_booking['preferred_date_until'];
+            delete vm.to_improve_booking['isSelected'];
+            delete vm.to_improve_booking['loads_number'];
+
+            bookingsService.save(vm.to_improve_booking).then(function () {
+                vm.showImprovePopup = false;
+                vm.selectBookingToImprove();
+            });
+        }
+
         // LOAD DETAILS
         function updateLoad() {
-            vm.current_load.current_status = "loaded";
-            bookingsLoadsService.save(vm.current_load).then(function () {
+            var update_load = angular.copy(vm.current_load);
+            update_load.currentStatus = "TryToImprove";
+            delete update_load['_links'];
+            delete update_load['producer'];
+
+            bookingsLoadsService.save(update_load).then(function () {
                 vm.showAlterLoadPopup = false;
             });
         }
 
         function cancelLoad() {
-            vm.current_load.current_status = "cancelled";
-            bookingsLoadsService.save(vm.current_load).then(function () {
+            var update_load = angular.copy(vm.current_load);
+            update_load.currentStatus = "cancelled";
+            delete update_load['_links'];
+
+            bookingsLoadsService.save(update_load).then(function () {
                 vm.showAlterLoadPopup = false;
-                vm.showCancelLoadPopup = false;
             });
         }
 
@@ -257,7 +300,7 @@
             vm.showCancelLoadPopup = true;
         }
 
-        // STANDBY
+        // BY
         function validateStandByDate() {
             vm.standByErrorMessages = [];
             if (vm.alter_stand_by.preferred_date_from > vm.alter_stand_by.preferred_date_until) {
@@ -299,10 +342,14 @@
 
         // Producer
         function contactProducer(status) {
-            vm.current_booking.contact_status = status;
-            vm.current_producer.contact_status = vm.current_booking.contact_status;
+            var contact_data = angular.copy(vm.current_booking);
+            contact_data.contactStatus = vm.current_producer.contactStatus = status;
 
-            bookingsService.save(vm.current_booking).then(function () {
+            contact_data.runDate = moment(contact_data.runDate).format('YYYY-MM-DD');
+            contact_data.deliveryDate = moment(contact_data.deliveryDate).format('YYYY-MM-DD');
+            contact_data.bookingDate = moment(contact_data.bookingDate).format('YYYY-MM-DD');
+
+            bookingsService.save(contact_data).then(function () {
                 vm.showProducerContact = false;
             });
         }

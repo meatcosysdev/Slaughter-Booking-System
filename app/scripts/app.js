@@ -10,14 +10,22 @@
             'chart.js',
             'BookingsApp.Directives'
         ])
+        .constant('CONFIG', {
+            app_version: '1.2.0',
+            api_url: 'http://localhost:8080',
+            standby_status: 'StandBy'
+        })
         .config(configFunction)
         .run(runOptions);
 
-    configFunction.$inject = ['$stateProvider', '$urlRouterProvider'];
+    configFunction.$inject = ['$stateProvider', '$urlRouterProvider', '$httpProvider'];
 
     runOptions.$inject = ['$rootScope', '$templateCache'];
 
-    function configFunction($stateProvider, $urlRouterProvider) {
+    function configFunction($stateProvider, $urlRouterProvider, $httpProvider) {
+        //$httpProvider.defaults.useXDomain = true;
+        //delete $httpProvider.defaults.headers.common['X-Requested-With'];
+
         $urlRouterProvider.otherwise('/home');
 
         $stateProvider

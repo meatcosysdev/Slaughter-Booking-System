@@ -5,22 +5,22 @@
         <li>
             <span>Truck Info for: {{vm.current_booking.id}}</span>
             <div class="truck-status">
-                <div class="status">Status: {{vm.current_booking.current_status}}</div>
+                <div class="status">Status: {{vm.current_booking.currentStatus}}</div>
                 <div class="status-icon"
                      ng-class="{
-                     'status-booked' : vm.current_booking.current_status == 'booked',
-                     'status-to-improve' : vm.current_booking.current_status == 'to-improve',
-                     'status-busy' : vm.current_booking.current_status == 'stand-by'}"></div>
+                     'status-booked' : vm.current_booking.currentStatus == 'Booked',
+                     'status-to-improve' : vm.current_booking.currentStatus == 'to-improve',
+                     'status-busy' : vm.current_booking.currentStatus == 'stand-by'}"></div>
             </div>
         </li>
         <li>
-            <div>Truck size: {{vm.current_booking.truck_size}}</div>
+            <div>Truck size: {{vm.current_booking.truckSize}}</div>
         </li>
         <li>
-            <div>Merit point:  {{vm.current_booking.merit_point}}</div>
+            <div>Merit point:  {{vm.current_booking.meritPoint}}</div>
         </li>
         <li>
-            <div>Allocation Date:  {{vm.current_booking.allocated_date}}</div>
+            <div>Allocation Date:  {{vm.current_booking.deliveryDate}}</div>
         </li>
         <li>
             <div>Preferred date range: {{vm.current_booking.preferred_date_from | date: "dd/MM/yyyy" }} -

@@ -47,6 +47,8 @@
             param.zindex = 100;
             param.className = $scope.msClass || 'ng-pageslide';
 
+            param.push = true;
+
             el.addClass(param.className);
 
             var content = null;
@@ -76,32 +78,11 @@
                 slider.style.webkitTransitionDuration = param.speed + 's';
                 slider.style.transitionProperty = 'width, height';
 
-                switch (param.side) {
-                    case 'right':
-                        slider.style.height = attrs.psCustomHeight || '100%';
-                        slider.style.top = attrs.psCustomTop || '0px';
-                        slider.style.bottom = attrs.psCustomBottom || '0px';
-                        slider.style.right = attrs.psCustomRight || '0px';
-                        break;
-                    case 'left':
-                        slider.style.height = attrs.psCustomHeight || '100%';
-                        slider.style.top = attrs.psCustomTop || '0px';
-                        slider.style.bottom = attrs.psCustomBottom || '0px';
-                        slider.style.left = attrs.psCustomLeft || '0px';
-                        break;
-                    case 'top':
-                        slider.style.width = attrs.psCustomWidth || '100%';
-                        slider.style.left = attrs.psCustomLeft || '0px';
-                        slider.style.top = attrs.psCustomTop || '0px';
-                        slider.style.right = attrs.psCustomRight || '0px';
-                        break;
-                    case 'bottom':
-                        slider.style.width = attrs.psCustomWidth || '100%';
-                        slider.style.bottom = attrs.psCustomBottom || '0px';
-                        slider.style.left = attrs.psCustomLeft || '0px';
-                        slider.style.right = attrs.psCustomRight || '0px';
-                        break;
-                }
+
+                slider.style.height = attrs.psCustomHeight || '100%';
+                slider.style.top = attrs.psCustomTop || '0px';
+                slider.style.bottom = attrs.psCustomBottom || '0px';
+                slider.style.left = attrs.psCustomLeft || '0px';
             }
 
             // Closed
@@ -120,42 +101,15 @@
             // Open
             function msOpen(slider, param) {
                 if (slider.style.width !== 0) {
-                    switch (param.side) {
-                        case 'right':
-                            slider.style.width = param.size;
-                            if (param.push) {
-                                body.style.right = param.size;
-                                body.style.left = '-' + param.size;
-                            }
-                            break;
-                        case 'left':
-                            slider.style.width = param.size;
-                            if (param.push) {
-                                body.style.left = param.size;
-                                body.style.right = '-' + param.size;
-                            }
-                            break;
-                        case 'top':
-                            slider.style.height = param.size;
-                            if (param.push) {
-                                body.style.top = param.size;
-                                body.style.bottom = '-' + param.size;
-                            }
-                            break;
-                        case 'bottom':
-                            slider.style.height = param.size;
-                            if (param.push) {
-                                body.style.bottom = param.size;
-                                body.style.top = '-' + param.size;
-                            }
-                            break;
+                    slider.style.width = param.size;
+                    if (param.push) {
+                        console.log(param.size)
+                        console.log(param.push)
+
+
+                        body.style.left = param.size;
+                        body.style.right = '-' + param.size;
                     }
-
-                    $timeout(function () {
-                        if (param.cloak) content.css('display', 'block');
-                    }, (param.speed * 1000));
-
-                    $scope.msOpen = true;
                 }
             }
 
