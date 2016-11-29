@@ -63,8 +63,8 @@
         // IMPLEMENTATIONS
         function init() {
             vm.loadAllBookings();
-           // vm.loadFacilities();
-           // vm.loadSupplyStreams();
+            vm.loadFacilities();
+            vm.loadSupplyStreams();
         }
 
         function loadSupplyStreams() {
@@ -162,9 +162,6 @@
         function getTruckLoads() {
             var url = vm.current_booking['_links']['bookingLoads']['href'];
 
-            // TODO
-            url = url.replace('http://localhost:8080', '');
-
             bookingsLoadsService.get_truck_loads(url).then(function (result) {
                 vm.truck_loads = (result['_embedded']['bookingLoads'] || []).map(function(load){
                     load.id = load['_links']['bookingLoad']['href'].split('/').pop();
@@ -172,9 +169,6 @@
                     load.booking_truck_id = vm.current_booking['id'];
 
                     var url = load['_links']['producer']['href'];
-
-                    // TODO
-                    url = url.replace('http://localhost:8080', '');
 
                     producerService.get_producer_for_load(url).then(function(producer){
                         if (producer) {
